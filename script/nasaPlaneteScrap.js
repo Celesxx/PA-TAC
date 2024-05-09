@@ -29,7 +29,7 @@ function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
             console.log("Status : loading url");
             const browser = await puppeteer.launch(
             {
-                headless: true, // Pour voir ce qui se passe, mettez à true pour mode sans tête
+                headless: false, // Pour voir ce qui se passe, mettez à true pour mode sans tête
                 args: ['--use-gl=desktop', '--enable-webgl', '--window-size=1920,1080']
             });
             const page = await browser.newPage();
