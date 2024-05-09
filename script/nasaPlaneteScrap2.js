@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
-// function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
 (async () => 
 {
@@ -13,8 +13,8 @@ const path = require('path');
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15',
     ];
 
-    const exoplanetsDict = require('./exoplanets_data.json');
-    fs.mkdirSync('img', { recursive: true });
+    const exoplanetsDict = require('../data/listExoplanetsLinkCurrent.json');
+    fs.mkdirSync('../data/dataset', { recursive: true });
 
     let i = 0;
 
@@ -24,7 +24,7 @@ const path = require('path');
         const planetUrl = exoplanetsDict[planetName];
         const browser = await puppeteer.launch(
         {
-            headless: true,
+            headless: false,
             args: ['--use-gl=desktop', '--enable-webgl', '--window-size=1920,1080']
         });
         const page = await browser.newPage();
@@ -35,17 +35,23 @@ const path = require('path');
             await page.setUserAgent(agents[i % agents.length]);
             await page.goto(planetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
-
             //récupération catégorie
-            await page.waitForSelector('tbody');
+            // await page.waitForSelector('tbody');
+            // const planetType = await page.evaluate(() => 
+            // {
+            //     const row = [...document.querySelectorAll('tr.fact_row')].find(row => row.querySelector('.title').textContent.includes('PLANET TYPE'));
+            //     return row ? row.querySelector('.value').textContent.trim() : 'Unknown';
+            // });
+
+            await page.waitForSelector('.smd-acf-grid-layout');
             const planetType = await page.evaluate(() => 
             {
-                const row = [...document.querySelectorAll('tr.fact_row')].find(row => row.querySelector('.title').textContent.includes('PLANET TYPE'));
-                return row ? row.querySelector('.value').textContent.trim() : 'Unknown';
+                const row = [...document.querySelectorAll('.smd-acf-grid-col')].find(row => row.querySelector('.text-bold').textContent.includes('Planet Type'));
+                return row ? row.querySelector('ul li span').textContent.trim() : 'Unknown';
             });
 
             //gestion dossier catégorie
-            const typeDir = path.join('img', planetType.replace(/ /g, '_').replace('/', '_').toLowerCase());
+            const typeDir = path.join('../data/dataset', planetType.replace(/ /g, '_').replace('/', '_').toLowerCase());
             fs.mkdirSync(typeDir, { recursive: true });
 
 
@@ -59,12 +65,20 @@ const path = require('path');
             if (footerDivs.length >= 2) {
                 await footerDivs[0].click();
             }
+            
+            console.log("test")
+            await page.waitForSelector('#dropUpId .tab.active.notempty .icon.active');
+            await page.click('#dropUpId .tab.active.notempty .icon.active');
+            console.log("test")
 
             //suppréssion de l'ui
             await frame.evaluate(() => {
                 const uiElements = document.querySelectorAll('.ui');
                 uiElements.forEach(el => el.style.display = 'none');
             });
+
+
+            
 
             //screenshot
             const canvas = await frame.$('canvas');
