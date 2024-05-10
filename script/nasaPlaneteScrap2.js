@@ -24,10 +24,10 @@ function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
         const planetUrl = exoplanetsDict[planetName];
         const browser = await puppeteer.launch(
         {
-            headless: true,
+            headless: false,
             args: ['--use-gl=desktop', '--enable-webgl', '--window-size=1280,800',
-            '--start-fullscreen',  // Lance le navigateur en plein écran
-            '--high-dpi-support=1',  // Active le support haute DPI
+            '--start-fullscreen',
+            '--high-dpi-support=1',
             '--device-scale-factor=2'
             ]
         });
@@ -83,12 +83,15 @@ function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
                     settingsItem.click();
                 }
             });
-            await frame.evaluate(() => {
+            await frame.evaluate(() => 
+            {
                 const settingsEntries = Array.from(document.querySelectorAll('.settingsEntry'));
-                if (settingsEntries.length >= 4) { // Assurez-vous qu'il y a au moins quatre entrées
+                if (settingsEntries.length >= 4) 
+                {
                     const floodLightingSwitch = settingsEntries[3].querySelector('.switch input[type="checkbox"]'); // Sélectionnez le commutateur dans le quatrième élément
-                    if (floodLightingSwitch) {
-                        floodLightingSwitch.click(); // Cliquez sur le commutateur
+                    if (floodLightingSwitch) 
+                    {
+                        floodLightingSwitch.click();
                     }
                 }
             });
@@ -97,6 +100,7 @@ function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
             await frame.waitForSelector('#compareBtnObj');
             await frame.click('#compareBtnObj');
             await frame.waitForSelector('.menuOptions', { visible: true });
+            await frame.waitForSelector('.menuItem.planet');
             await frame.click('.menuItem.planet');
 
             //suppréssion de l'ui
