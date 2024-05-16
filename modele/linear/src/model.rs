@@ -1,10 +1,8 @@
 extern crate rand;
 
-use rand::Rng;
-use std::ffi::CStr;
-use std::os::raw::c_double;
-use std::os::raw::c_char;
-use crate::activation::sigmoid;
+use std::ffi::{CStr, CString};
+use std::os::raw::{c_double, c_char};
+use crate::activation::{sigmoid, tanh, relu};
 
 #[repr(C)]
 pub struct LinearModel 
@@ -13,18 +11,20 @@ pub struct LinearModel
     learning_rate: f64,
     weights: Vec<f64>,
     bias: f64,
+    activation: char,
 }
 
 
 impl LinearModel
 {
-    pub fn init(learning_rate: f64, weights: Vec<f64>, bias: f64) -> Self
+    pub fn init(learning_rate: f64, weights: Vec<f64>, bias: f64, activation: char) -> Self
     {
         LinearModel 
         {   
             learning_rate,
             weights,
             bias,
+            activation,
         }
     }
 
@@ -61,14 +61,20 @@ impl LinearModel
         {
             sum += weight * input;
         }
-        sigmoid(sum)
+
+        match self.activation 
+        {
+            't' => tanh(sum),
+            'r' => relu(sum),
+            _ => sigmoid(sum),
+        }
     }
 
 }
 
 
 #[no_mangle]
-pub extern "C" fn LM_init(learning_rate: f64, weights_ptr: *const c_double, weights_len: usize, bias: f64) -> *mut LinearModel 
+pub extern "C" fn LM_init(learning_rate: f64, weights_ptr: *const c_double, weights_len: usize, bias: f64, activation: c_char) -> *mut LinearModel 
 {
     let weights = unsafe 
     {
@@ -76,7 +82,13 @@ pub extern "C" fn LM_init(learning_rate: f64, weights_ptr: *const c_double, weig
         std::slice::from_raw_parts(weights_ptr, weights_len).to_vec()
     };
 
-    Box::into_raw(Box::new(LinearModel::init(learning_rate, weights, bias)))
+    let activation_char = activation as u8 as char;
+    let valid_activations = ['t', 's', 'r'];
+    assert!(
+        valid_activations.contains(&activation_char),
+        "Invalid activation function, select one of them (t for tanh, s for sigmoid, r for relu)"
+    );
+    Box::into_raw(Box::new(LinearModel::init( learning_rate, weights, bias, activation_char, )))
 }
 
 
