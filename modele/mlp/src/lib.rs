@@ -1,6 +1,5 @@
-pub mod tensor;
 pub mod activation;
-pub mod layer;
+pub mod neural_matrix;
 pub mod optimizer;
 pub mod mlp;
 
