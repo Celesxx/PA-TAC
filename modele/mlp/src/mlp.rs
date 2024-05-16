@@ -36,80 +36,105 @@ impl MlpModel
     }
 
 
-    pub fn train(&mut self, X: &[Vec<f64>], y: &[Vec<f64>], epochs: usize, is_classification: bool) 
+    //------------------------ Passage en avant des inputs ------------------------
+    pub fn forward(&self, inputs: &[f64], is_classification: bool) -> Vec<Vec<f64>> 
+    {
+        //Initialise l'activation
+        let mut activations = vec![inputs.to_vec()];
+        //Calcule les activations pour chaque couche du neuronnes
+        for layer in &self.neural_matrix 
+        {
+            //Calcule la nouvelle sortie par rapport à la précedénte
+            let output = layer.forward(activations.last().unwrap(), is_classification);
+            activations.push(output);
+        }
+        activations
+    }
+
+
+
+
+
+
+
+
+    pub fn backward(&mut self, activations: &[Vec<f64>], target: &[f64], is_classification: bool) -> f64 
+    {
+        let last_layer_output_size = self.neural_matrix.last().unwrap().output_size;
+        //Si c'est avec plus d'une classe alors utilisation de la dérivé du softmax
+        //Sinon rapport diff entrée / sortie
+        let mut deltas = if is_classification && last_layer_output_size > 1 {
+            crate::activation::softmax_derivative(activations.last().unwrap(), &target.to_vec())
+        } else {
+            activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| output - target).collect::<Vec<_>>()
+        };
+
+
+        //Calcul du loss par rapport au précédent
+        let mut loss = 0.0;
+        for (output, &target) in activations.last().unwrap().iter().zip(target.iter()) 
+        {
+            loss += (output - target).powi(2);
+        }
+        
+        //Parcours les couches neuronnes en sens inverse
+        for (i, layer) in self.neural_matrix.iter_mut().enumerate().rev() 
+        {
+
+            // si une seul sortie utilisation de tanh
+            // Sinon relu 
+            // A revoir me semble bizarre cette histoire
+            let delta = if is_classification && last_layer_output_size == 1 
+            {
+                deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
+            } else {
+                deltas.iter().map(|&d| d * crate::activation::relu_derivative(d)).collect::<Vec<_>>()
+            };
+
+            //------------------------ update des poids ------------------------
+            //Parcours les couches
+            for (j, neuron_weights) in layer.matrix.iter_mut().enumerate() 
+            {
+                //parcours les neuronnes
+                for k in 0..neuron_weights.len() 
+                {
+                    //met à jours les poids
+                    neuron_weights[k] -= self.optimizer.learning_rate as f64 * delta[j] * activations[i][k];
+                }
+                //Met a jour le biais
+                layer.bias[j] -= self.optimizer.learning_rate as f64 * delta[j];
+            }
+
+            // Calcule de l'erreur précédente en multipliant par le delta actuel
+            deltas = (0..layer.input_size).map(|k| {
+                delta.iter().zip(layer.matrix.iter().map(|w| w[k])).map(|(d, w)| d * w).sum()
+            }).collect::<Vec<_>>();
+        }
+        loss
+    }
+
+
+
+
+    pub fn train(&mut self, X: &[Vec<f64>], y: &[Vec<f64>], epochs: usize, is_classification: bool) -> Vec<f64> 
     {
         //Boucle pour chaque epochs 
+        let mut losses = Vec::new();
         for _ in 0..epochs 
         {
             //Pour chaque valeur d'input sa boucle avec sa cible 
+            let mut epoch_loss = 0.0;
             for (inputs, target) in X.iter().zip(y.iter()) 
             {
-
-
-                //------------------------ Passage en avant des inputs ------------------------
-                //Initialise l'activation
-                let mut activations = vec![inputs.to_vec()];
-                //Calcule les activations pour chaque couche du neuronnes
-                for layer in &self.neural_matrix
-                {
-                    //Calcule la nouvelle sortie par rapport à la précedénte
-                    let output = layer.forward(activations.last().unwrap(), is_classification);
-                    activations.push(output);
-                }
-
-
-    
-                //------------------------ Calcul de l'erreur ------------------------
-
-                //taille de sortie du dernier output
-                let last_layer_output_size = self.neural_matrix.last().unwrap().output_size;
-                //Si c'est avec plus d'une classe alors utilisation de la dérivé du softmax
-                //Sinon rapport diff entrée / sortie
-                let mut deltas = if is_classification && last_layer_output_size > 1 
-                {
-                    crate::activation::softmax_derivative(activations.last().unwrap(), target)
-                }else {
-                    activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| output - target).collect::<Vec<_>>()
-                };
-    
-
-                //------------------------ Rétropagation de l'erreur ------------------------
-                //Parcours les couches neuronnes en sens inverse
-                for (i, layer) in self.neural_matrix.iter_mut().enumerate().rev() 
-                {
-                    // si une seul sortie utilisation de tanh
-                    // Sinon relu 
-                    // A revoir me semble bizarre cette histoire
-                    let delta = if is_classification && last_layer_output_size == 1 
-                    {
-                        deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
-                    }else {
-                        deltas.iter().map(|&d| d * crate::activation::relu_derivative(d)).collect::<Vec<_>>()
-                    };
-    
-                    //------------------------ update des poids ------------------------
-                    //Parcours les couches
-                    for (j, neuron_weights) in layer.matrix.iter_mut().enumerate() 
-                    {
-                        //parcours les neuronnes
-                        for k in 0..neuron_weights.len() 
-                        {
-                            //Met a jours les poidss
-                            neuron_weights[k] -= self.optimizer.learning_rate as f64 * delta[j] * activations[i][k];
-                        }
-                        //Met a jour le biais
-                        layer.bias[j] -= self.optimizer.learning_rate as f64 * delta[j];
-                    }
-    
-                    // Calcule de l'erreur précédente en multipliant par le delta actuel
-                    deltas = (0..layer.input_size).map(|k| 
-                    {
-                        delta.iter().zip(layer.matrix.iter().map(|w| w[k])).map(|(d, w)| d * w).sum()
-                    }).collect::<Vec<_>>();
-                }
+                //Passage en avant des inputs
+                let activations = self.forward(inputs, is_classification);
+                epoch_loss += self.backward(&activations, target, is_classification);
             }
+            losses.push(epoch_loss / X.len() as f64);
         }
+        losses
     }
+
     
 
     pub fn predict(&self, inputs: &[f64], is_classification: bool) -> Vec<f64> 
@@ -174,6 +199,57 @@ pub extern "C" fn mlpPredict(
         }
     }
 }
+
+
+
+#[no_mangle]
+pub extern "C" fn mlpForward(
+    model: *mut MlpModel,
+    inputs_ptr: *const f64,
+    n_inputs: usize,
+    is_classification: bool
+) -> *mut f64 
+{
+    let model = unsafe { &mut *model };
+    let inputs = unsafe { std::slice::from_raw_parts(inputs_ptr, n_inputs) };
+
+    let activations = model.forward(inputs, is_classification);
+    let last_activations = activations.last().unwrap();
+
+    let boxed_activations = last_activations.clone().into_boxed_slice();
+    Box::into_raw(boxed_activations) as *mut f64
+}
+
+
+
+#[no_mangle]
+pub extern "C" fn mlpBackward(
+    model: *mut MlpModel,
+    activations_ptr: *const f64,
+    target_ptr: *const f64,
+    n_layers: usize,
+    is_classification: bool
+) -> f64 
+{
+    let model = unsafe { &mut *model };
+    let activations: Vec<Vec<f64>> = (0..n_layers).map(|i| {
+        let ptr = unsafe { activations_ptr.add(i * n_layers) };
+        let slice = unsafe { std::slice::from_raw_parts(ptr, n_layers) };
+        slice.to_vec()
+    }).collect();
+    let target = unsafe { std::slice::from_raw_parts(target_ptr, n_layers) };
+
+    model.backward(&activations, &target.to_vec(), is_classification)
+}
+
+
+#[no_mangle]
+pub extern "C" fn mlpUpdateWeights(model: *mut MlpModel, learning_rate: f32) {
+    let model = unsafe { &mut *model };
+    model.optimizer.learning_rate = learning_rate;
+}
+
+
 
 
 #[no_mangle]
