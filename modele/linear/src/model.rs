@@ -21,7 +21,7 @@ impl LinearModel
     pub fn init(learning_rate: f64, weights: Vec<f64>, bias: f64) -> Self
     {
         LinearModel 
-        {
+        {   
             learning_rate,
             weights,
             bias,
@@ -70,7 +70,8 @@ impl LinearModel
 #[no_mangle]
 pub extern "C" fn LM_init(learning_rate: f64, weights_ptr: *const c_double, weights_len: usize, bias: f64) -> *mut LinearModel 
 {
-    let weights = unsafe {
+    let weights = unsafe 
+    {
         assert!(!weights_ptr.is_null());
         std::slice::from_raw_parts(weights_ptr, weights_len).to_vec()
     };
@@ -79,32 +80,74 @@ pub extern "C" fn LM_init(learning_rate: f64, weights_ptr: *const c_double, weig
 }
 
 
+
 #[no_mangle]
-pub extern "C" fn LM_train(model: *mut LinearModel, X: *const *const c_double, y: *const c_double, n_samples: usize, n_features: usize, epochs: usize) 
+pub extern "C" fn LM_train(
+    model: *mut LinearModel,
+    X: *const c_double,
+    y: *const c_double,
+    n_samples: usize,
+    n_features: usize,
+    epochs: usize,
+)
 {
-    let model = unsafe 
+    //vérification des paramètres
+    assert!(!model.is_null(), "Model pointer is null");
+    assert!(!X.is_null(), "X pointer is null");
+    assert!(!y.is_null(), "y pointer is null");
+
+    // Conversion du pointeur modèle en référence mutable
+    let model = unsafe { &mut *model };
+
+    // Conversion du <vec> en <vec<vec>> à partir du <vec> flatten et la taille
+    let x_vector = unsafe { std::slice::from_raw_parts(X, n_samples * n_features) };
+    let mut x_converted = Vec::with_capacity(n_samples);
+    for i in 0..n_samples 
     {
-        assert!(!model.is_null());
-        &mut *model
-    };
+        let start = i * n_features;
+        let end = start + n_features;
+        let row = &x_vector[start..end];
+        x_converted.push(row.to_vec());
+    }
 
-    let X: Vec<Vec<f64>> = unsafe 
+    let y_vector: Vec<f64> = unsafe { std::slice::from_raw_parts(y, n_samples).to_vec() };
+
+    // Entraînez le modèle
+    for epoch in 0..epochs 
     {
-        (0..n_samples)
-            .map(|i| 
-            {
-                let row = *X.add(i);
-                std::slice::from_raw_parts(row, n_features).to_vec()
-            })
-            .collect()
-    };
-
-    let y: Vec<f64> = unsafe { std::slice::from_raw_parts(y, n_samples).to_vec() };
-
-    model.train(&X, &y, epochs);
+        model.train(&x_converted, &y_vector, 1);
+        if epoch % 100 == 0 { println!("Epoch {} completed", epoch); }
+    }
 }
 
 
+#[no_mangle]
+pub extern "C" fn LM_predict(
+    model: *const LinearModel,
+    x: *const c_double,
+    n_samples: usize,
+    n_features: usize,
+    predictions: *mut c_double,
+) 
+{
+    assert!(!model.is_null(), "Model pointer is null");
+    assert!(!x.is_null(), "x pointer is null");
+    assert!(!predictions.is_null(), "Predictions pointer is null");
+    let model = unsafe { &*model };
+
+    let x_vector = unsafe { std::slice::from_raw_parts(x, n_samples * n_features) };
+
+    for i in 0..n_samples 
+    {
+        let start = i * n_features;
+        let end = start + n_features;
+        let row = &x_vector[start..end];
+        let prediction = model.predict(&row.to_vec());
+        unsafe {
+            *predictions.add(i) = prediction;
+        }
+    }
+}
 
 
 #[no_mangle]

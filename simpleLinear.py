@@ -16,7 +16,7 @@ linear_model.LM_free.argtypes = [ctypes.POINTER(ctypes.c_void_p)]
 
 linear_model.LM_train.argtypes = [
     ctypes.POINTER(ctypes.c_void_p),
-    np.ctypeslib.ndpointer(dtype=np.float64, ndim=2, flags='C_CONTIGUOUS'),
+    np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
     np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
     ctypes.c_size_t,
     ctypes.c_size_t,
@@ -32,22 +32,25 @@ epochs = 1000
 model = linear_model.LM_init(learning_rate, weights, weights.size, bias)
 
 # XOR test
-X_train = np.array([
+x_train = np.array([
     [0.0, 0.0],
     [0.0, 1.0],
     [1.0, 0.0]
 ], dtype=np.float64, order='C')
-
+x_train_flatten = x_train.flatten()
 y_train = np.array([-1.0, 1.0, 1.0], dtype=np.float64, order='C')
 
-print(f"x shape : {X_train.shape[0]}")
-print(f"x shape : {X_train.shape[1]}")
+print(f"flatten vector {x_train}")
+print(f"x shape : {x_train.shape[0]}")
+print(f"x shape : {x_train.shape[1]}")
+
+
 
 # Nombre d'époques d'entraînement
 
 # Entrainement du modèle
 try:
-    linear_model.LM_train(model, X_train, y_train, X_train.shape[0], X_train.shape[1], epochs)
+    linear_model.LM_train(model, x_train_flatten, y_train, x_train.shape[0], x_train.shape[1], epochs)
     print("Entraînement terminé avec succès")
 except Exception as e:
     print(f"Erreur lors de l'entraînement : {e}")
