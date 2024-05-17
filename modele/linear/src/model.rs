@@ -121,15 +121,14 @@ pub extern "C" fn LM_train(
         let row = &x_vector[start..end];
         x_converted.push(row.to_vec());
     }
+    println!("vector x : {:?}", x_converted);
+
 
     let y_vector: Vec<f64> = unsafe { std::slice::from_raw_parts(y, n_samples).to_vec() };
-
+    println!("vector y : {:?}", y_vector);
     // Entraînez le modèle
-    for epoch in 0..epochs 
-    {
-        model.train(&x_converted, &y_vector, 1);
-        if epoch % 100 == 0 { println!("Epoch {} completed", epoch); }
-    }
+    model.train(&x_converted, &y_vector, epochs);
+    println!("Training completed");
 }
 
 
@@ -148,16 +147,28 @@ pub extern "C" fn LM_predict(
     let model = unsafe { &*model };
 
     let x_vector = unsafe { std::slice::from_raw_parts(x, n_samples * n_features) };
+    let mut x_converted = Vec::with_capacity(n_samples);
+
+    println!("vector x : {:?}", x_vector);
+    println!("samples : {:?}", n_samples);
+    println!("features : {:?}", n_features);
+
+
 
     for i in 0..n_samples 
     {
         let start = i * n_features;
         let end = start + n_features;
         let row = &x_vector[start..end];
-        let prediction = model.predict(&row.to_vec());
-        unsafe {
-            *predictions.add(i) = prediction;
-        }
+        x_converted.push(row.to_vec());
+    }
+
+    println!("vector x converted : {:?}", x_converted);
+
+    for (i, row) in x_converted.iter().enumerate() 
+    {
+        let prediction = model.predict(row);
+        unsafe { *predictions.add(i) = prediction; }
     }
 }
 
