@@ -11,9 +11,10 @@ pub struct MlpModel
     optimizer: GradientDescent,
 }
 
+
 impl MlpModel 
 {
-    pub fn init(neurons_size: Vec<usize>, learning_rate: f32) -> Self 
+    pub fn init(neurons_size: Vec<usize>, learning_rate: f64) -> Self 
     {
         let layer = neurons_size.len() - 1;
         let neural_matrix = neurons_size.windows(2).map(|w| NeuralMatrix::new(w[0], w[1])).collect();
@@ -99,10 +100,10 @@ impl MlpModel
                 for k in 0..neuron_weights.len() 
                 {
                     //met à jours les poids
-                    neuron_weights[k] -= self.optimizer.learning_rate as f64 * delta[j] * activations[i][k];
+                    neuron_weights[k] -= self.optimizer.learning_rate * delta[j] * activations[i][k];
                 }
                 //Met a jour le biais
-                layer.bias[j] -= self.optimizer.learning_rate as f64 * delta[j];
+                layer.bias[j] -= self.optimizer.learning_rate * delta[j];
             }
 
             // Calcule de l'erreur précédente en multipliant par le delta actuel
@@ -146,7 +147,7 @@ impl MlpModel
 
 
 #[no_mangle]
-pub extern "C" fn mlpInit(neural_size: *const usize, len: usize, learning_rate: f32) -> *mut MlpModel {
+pub extern "C" fn mlpInit(neural_size: *const usize, len: usize, learning_rate: f64) -> *mut MlpModel {
     assert!(!neural_size.is_null(), "Please select a correct configuration");
 
     let neuron_matrix: Vec<usize> = unsafe {
@@ -170,7 +171,6 @@ pub extern "C" fn mlpTrain(
     let model = unsafe { &mut *model };
     let X = unsafe { std::slice::from_raw_parts(X, n_samples * n_features) };
     let y = unsafe { std::slice::from_raw_parts(y, n_samples) };
-
     let X: Vec<Vec<f64>> = X.chunks_exact(n_features).map(|chunk| chunk.to_vec()).collect();
     let y: Vec<Vec<f64>> = y.iter().map(|&val| vec![val]).collect();
 
@@ -184,7 +184,8 @@ pub extern "C" fn mlpPredict(
     n_features: usize,
     is_classification: bool,
     predictions: *mut f64
-) {
+) 
+{
     assert!(!model.is_null(), "Model pointer is null");
     assert!(!inputs.is_null(), "Inputs pointer is null");
     assert!(!predictions.is_null(), "Predictions pointer is null");
@@ -193,7 +194,8 @@ pub extern "C" fn mlpPredict(
     let inputs = unsafe { std::slice::from_raw_parts(inputs, n_features) };
     let result = model.predict(inputs, is_classification);
 
-    for (i, &value) in result.iter().enumerate() {
+    for (i, &value) in result.iter().enumerate() 
+    {
         unsafe {
             *predictions.add(i) = value;
         }
@@ -244,7 +246,7 @@ pub extern "C" fn mlpBackward(
 
 
 #[no_mangle]
-pub extern "C" fn mlpUpdateWeights(model: *mut MlpModel, learning_rate: f32) {
+pub extern "C" fn mlpUpdateWeights(model: *mut MlpModel, learning_rate: f64) {
     let model = unsafe { &mut *model };
     model.optimizer.learning_rate = learning_rate;
 }
@@ -256,6 +258,60 @@ pub extern "C" fn mlpUpdateWeights(model: *mut MlpModel, learning_rate: f32) {
 pub extern "C" fn mlpFree(model: *mut MlpModel) {
     if !model.is_null() {
         unsafe { Box::from_raw(model); }
+    }
+}
+
+
+
+
+
+
+
+#[cfg(test)]
+mod tests 
+{
+    use super::*;
+
+    #[test]
+    fn test_mlp_model_xor() 
+    {
+        let neurons_size = vec![2, 3, 1];
+        let learning_rate = 0.01;
+        let mut model = MlpModel::init(neurons_size, learning_rate);
+
+        let x_train = vec![
+            vec![0.0, 0.0],
+            vec![0.0, 1.0],
+            vec![1.0, 0.0],
+            vec![1.0, 1.0],
+        ];
+
+        let y_train = vec![
+            vec![-1.0],
+            vec![1.0],
+            vec![1.0],
+            vec![-1.0],
+        ];
+
+        let epochs = 100000;
+        model.train(&x_train, &y_train, epochs, true);
+
+        for inputs in x_train.iter() 
+        {
+            let prediction = model.predict(inputs, true);
+            println!("Input: {:?}, Prediction: {:?}", inputs, prediction);
+        }
+
+        let predictions: Vec<Vec<f64>> = x_train.iter().map(|inputs| model.predict(inputs, true)).collect();
+        assert_eq!(predictions.len(), x_train.len());
+
+        for (pred, target) in predictions.iter().zip(y_train.iter()) 
+        {
+            assert!(pred.len() == target.len());
+            for (p, t) in pred.iter().zip(target.iter()) {
+                assert!((p - t).abs() < 0.5, "Prediction: {:?}, Target: {:?}", pred, target);
+            }
+        }
     }
 }
 
