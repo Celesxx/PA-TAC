@@ -67,6 +67,7 @@ impl NeuralMatrix
         if is_classification 
         {
             if is_classification && self.output_size > 1 {
+                println!("softmax utilisé");
                 neuron_outputs = crate::activation::softmax(&neuron_outputs);
             } else if is_classification {
                 neuron_outputs.iter_mut().for_each(|o| *o = crate::activation::tanh(*o));

@@ -2,6 +2,8 @@ use crate::neural_matrix::NeuralMatrix;
 use std::os::raw::{c_double, c_char};
 use crate::activation::{tanh, relu, relu_derivative, tanh_derivative, softmax, softmax_derivative};
 use crate::optimizer::GradientDescent;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 #[derive(Debug)]
 pub struct MlpModel 
@@ -65,6 +67,7 @@ impl MlpModel
         //Si c'est avec plus d'une classe alors utilisation de la dérivé du softmax
         //Sinon rapport diff entrée / sortie
         let mut deltas = if is_classification && last_layer_output_size > 1 {
+            println!("dérivé softmax utilisé");
             crate::activation::softmax_derivative(activations.last().unwrap(), &target.to_vec())
         } else {
             activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| output - target).collect::<Vec<_>>()
@@ -117,22 +120,53 @@ impl MlpModel
 
 
 
-    pub fn train(&mut self, X: &[Vec<f64>], y: &[Vec<f64>], epochs: usize, is_classification: bool) -> Vec<f64> 
-    {
-        //Boucle pour chaque epochs 
+    // pub fn train(&mut self, X: &[Vec<f64>], y: &[Vec<f64>], epochs: usize, is_classification: bool) -> Vec<f64> 
+    // {
+    //     //Boucle pour chaque epochs 
+    //     let mut losses = Vec::new();
+    //     for _ in 0..epochs 
+    //     {
+    //         //Pour chaque valeur d'input sa boucle avec sa cible 
+    //         // sortie pour softmax (pas ici) doit être des label de ([-1, 1, -1], [1,-1, -1])
+    //         let mut epoch_loss = 0.0; // shuffle avant de lister les indices ##### 1
+
+    //         // voir stochastice gradient 
+    //         for (inputs, target) in X.iter().zip(y.shuffle().iter()) 
+    //         {
+    //             //Passage en avant des inputs
+    //             let activations = self.forward(inputs, is_classification);
+    //             epoch_loss += self.backward(&activations, target, is_classification);
+    //         }
+    //         losses.push(epoch_loss / X.len() as f64);
+    //     }
+    //     losses
+    // }
+
+    pub fn train(&mut self, X: &[Vec<f64>], y: &[Vec<f64>], epochs: usize, is_classification: bool) -> Vec<f64> {
         let mut losses = Vec::new();
+        let mut rng = thread_rng(); // Initialiser le générateur de nombres aléatoires
+
         for _ in 0..epochs 
         {
-            //Pour chaque valeur d'input sa boucle avec sa cible 
             let mut epoch_loss = 0.0;
-            for (inputs, target) in X.iter().zip(y.iter()) 
+
+            // Créer un vecteur d'indices et le mélanger
+            let mut indices: Vec<usize> = (0..X.len()).collect();
+            indices.shuffle(&mut rng);
+
+            // Utiliser les indices mélangés pour accéder aux éléments de X et y
+            for &i in indices.iter() 
             {
-                //Passage en avant des inputs
+                let inputs = &X[i];
+                let target = &y[i];
+
                 let activations = self.forward(inputs, is_classification);
                 epoch_loss += self.backward(&activations, target, is_classification);
             }
+
             losses.push(epoch_loss / X.len() as f64);
         }
+
         losses
     }
 

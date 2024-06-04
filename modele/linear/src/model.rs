@@ -67,7 +67,9 @@ impl LinearModel
             't' => tanh(sum),
             'r' => relu(sum),
             _ => sigmoid(sum),
-        }
+        };
+
+        -0.42
     }
 
 }
