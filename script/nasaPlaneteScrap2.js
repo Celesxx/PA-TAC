@@ -74,6 +74,12 @@ function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
       
             
             //reset position
+            await frame.waitForSelector('#compareBtnObj');
+            await frame.click('#compareBtnObj');
+            await frame.waitForSelector('.menuOptions', { visible: true });
+            await frame.waitForSelector('.menuItem.planet');
+            await frame.click('.menuItem.planet');
+            
             await frame.waitForSelector('.headerButton');
             await frame.click('.headerButton');
             await frame.evaluate(() => {
@@ -95,13 +101,9 @@ function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
                     }
                 }
             });
-            await frame.click('.settings .headerBar .headerRight .closeButton'); 
-            await frame.click('.mainMenu .headerBar .headerRight .headerButton');
-            await frame.waitForSelector('#compareBtnObj');
-            await frame.click('#compareBtnObj');
-            await frame.waitForSelector('.menuOptions', { visible: true });
-            await frame.waitForSelector('.menuItem.planet');
-            await frame.click('.menuItem.planet');
+            // await frame.click('.settings .headerBar .headerRight .closeButton'); 
+            // await frame.click('.mainMenu .headerBar .headerRight .headerButton');
+            
 
             //suppréssion de l'ui
             await frame.evaluate(() => {
