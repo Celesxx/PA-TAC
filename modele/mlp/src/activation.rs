@@ -24,3 +24,9 @@ pub fn softmax(x: &Vec<f64>) -> Vec<f64> {
 pub fn softmax_derivative(output: &Vec<f64>, target: &Vec<f64>) -> Vec<f64> {
     output.iter().zip(target.iter()).map(|(o, t)| o - t).collect()
 }
+
+
+pub fn softmax_derivative_simple(output: f64) -> f64 {
+    output * (1.0 - output)
+}
+
