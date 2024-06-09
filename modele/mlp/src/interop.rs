@@ -31,6 +31,7 @@ pub extern "C" fn mlpTrain(
     n_features: usize,
     n_classes: usize,
     epochs: usize,
+    batch_size: usize,
     is_classification: bool,
     callback: ProgressCallback,
     callback_interval: usize
@@ -42,7 +43,7 @@ pub extern "C" fn mlpTrain(
     let X: Vec<Vec<f64>> = X.chunks_exact(n_features).map(|chunk| chunk.to_vec()).collect();
     let y: Vec<Vec<f64>> = y.chunks_exact(n_classes).map(|chunk| chunk.to_vec()).collect();
 
-    model.train(&X, &y, epochs, is_classification, callback, callback_interval);
+    model.train(&X, &y, epochs, batch_size, is_classification, callback, callback_interval);
 }
 
 

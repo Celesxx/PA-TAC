@@ -128,9 +128,6 @@ impl MlpModel
             //Parcours les couches
             for (j, neuron_weights) in layer.matrix.iter_mut().enumerate() 
             {
-                 if j >= delta.len() {
-                    panic!("Index out of bounds: the delta length is {}, but the index is {}", delta.len(), j);
-                }
                 //parcours les neuronnes
                 for k in 0..neuron_weights.len() 
                 {
@@ -157,6 +154,7 @@ impl MlpModel
         &mut self, X: &[Vec<f64>], 
         y: &[Vec<f64>], 
         epochs: usize, 
+        batch_size: usize,
         is_classification: bool,
         callback: ProgressCallback,
         callback_interval: usize
@@ -169,20 +167,39 @@ impl MlpModel
             let mut epoch_loss = 0.0;
 
             // Créer un vecteur d'indices et le mélanger
-            // let mut indices: Vec<usize> = (0..X.len()).collect();
-            // indices.shuffle(&mut rng);
+            let mut indices: Vec<usize> = (0..X.len()).collect();
+            indices.shuffle(&mut rng);
 
             // Utiliser les indices mélangés pour accéder aux éléments de X et y
             // for &i in indices.iter() 
-            for (inputs, target) in X.iter().zip(y.iter())
+            for batch_indices in indices.chunks(batch_size)
+            // for (inputs, target) in X.iter().zip(y.iter())
             {
+                let mut batch_loss = 0.0;
                 // let inputs = &X[i];
                 // let target = &y[i];
 
-                let activations = self.forward(inputs, is_classification);
-                epoch_loss += self.backward(&activations, target, is_classification);
+                for &i in batch_indices 
+                {
+                    let inputs = &X[i];
+                    let target = &y[i];
+
+                    let activations = self.forward(inputs, is_classification);
+                    batch_loss += self.backward(&activations, target, is_classification);
+                }
+
+                // let activations = self.forward(inputs, is_classification);
+                // epoch_loss += self.backward(&activations, target, is_classification);
+                epoch_loss += batch_loss / batch_indices.len() as f64;
             }
-            let avg_loss = epoch_loss / X.len() as f64;
+            // let avg_loss = epoch_loss / X.len() as f64;
+            // if epoch % callback_interval == 0 || epoch == epochs - 1 
+            // {
+            //     callback(epoch as c_int, avg_loss);
+            // }
+            
+            let num_batches = if X.len() / batch_size == 0 { 1 } else { X.len() / batch_size };
+            let avg_loss = epoch_loss / num_batches as f64;
             if epoch % callback_interval == 0 || epoch == epochs - 1 
             {
                 callback(epoch as c_int, avg_loss);
