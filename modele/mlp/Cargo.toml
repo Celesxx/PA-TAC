@@ -1,0 +1,11 @@
+[package]
+name = "untitled"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "mlp_classification"
+crate-type = ["cdylib"]
+
+[dependencies]
+rand = "0.9.0-alpha.1"

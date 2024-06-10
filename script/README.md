@@ -45,3 +45,11 @@ PA-TAC/script/
 ├── nasaPlaneteScrap.js             # Ancien script JavaScript
 └── nasaPlaneteScrap2.js             # Script JavaScript
 ```
+
+
+## Resize script
+
+```bash
+python resize.py crop 580 580 ../data/dataset/resized/gas_giant ../data/dataset/resized/gas_giant
+python resize.py resize 200 200 ../data/dataset/resized/gas_giant ../data/dataset/resized/gas_giant
+```

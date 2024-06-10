@@ -1,0 +1,17 @@
+digraph MLP {
+    node [shape=box];
+
+    init [label="Initialisation (init)\nEntrée: neurons_size, learning_rate\nActions: Calcule layers, init neural_matrix, init optimizer\nSortie: Instance de MlpModel"];
+    propagate [label="Propagation en avant (propagate)\nEntrée: inputs, is_classification\nActions: Itération sur neural_matrix, calcul des activations\nSortie: Activations finales"];
+    forward [label="Passage en avant des inputs (forward)\nEntrée: inputs, is_classification\nActions: Init activations, itération sur neural_matrix, calcul et ajout des activations\nSortie: Liste des activations"];
+    backward [label="Rétropropagation (backward)\nEntrée: activations, target, is_classification\nActions: Calcul des deltas, calcul du loss, mise à jour des poids et biais\nSortie: Loss"];
+    train [label="Entraînement (train)\nEntrée: X, y, epochs, is_classification\nActions: Itération sur epochs, mélange des indices, passage en avant, rétropropagation, calcul du loss moyen\nSortie: Liste des pertes moyennes"];
+    predict [label="Prédiction (predict)\nEntrée: inputs, is_classification\nActions: Appel à propagate\nSortie: Activations finales"];
+
+    init -> train;
+    train -> forward [label="Pour chaque échantillon"];
+    train -> backward [label="Pour chaque échantillon"];
+    forward -> propagate [label="Calcul des activations"];
+    backward -> propagate [label="Mise à jour des poids et biais"];
+    predict -> propagate [label="Calcul des activations finales"];
+}
