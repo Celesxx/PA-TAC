@@ -19,7 +19,14 @@ pub fn softmax(x: &Vec<f64>) -> Vec<f64> {
     let exp_x: Vec<f64> = x.iter().map(|&xi| (xi - max).exp()).collect();
     let sum_exp_x: f64 = exp_x.iter().sum();
     exp_x.iter().map(|&xi| xi / sum_exp_x).collect()
+
+    // pour éviter grosse valeur 
+    // voir photo cours
+
+
 }
+
+
 
 pub fn softmax_derivative(output: &Vec<f64>, target: &Vec<f64>) -> Vec<f64> {
     output.iter().zip(target.iter()).map(|(o, t)| o - t).collect()
