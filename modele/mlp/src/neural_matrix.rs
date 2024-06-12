@@ -63,7 +63,7 @@ impl NeuralMatrix
 
         if is_classification 
         {
-            if output_size > 1 
+            if output_size > 1 && is_output_layer
             {
                 neuron_outputs = crate::activation::softmax(&neuron_outputs);
             }else

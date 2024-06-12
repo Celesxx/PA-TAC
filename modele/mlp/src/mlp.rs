@@ -2,6 +2,7 @@ use crate::neural_matrix::NeuralMatrix;
 use crate::interop::ProgressCallback;
 use std::os::raw::{c_double, c_char, c_int};
 use crate::activation::{tanh, relu, relu_derivative, tanh_derivative, softmax, softmax_derivative};
+use crate::tensorboard::TensorBoardLogger;
 use crate::optimizer::GradientDescent;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -110,13 +111,13 @@ impl MlpModel
             {
                 if is_classification 
                 {
-                    if self.output_size > 1 
-                    {
-                        deltas.iter().map(|&d| d * crate::activation::softmax_derivative_simple(d)).collect::<Vec<_>>()
-                    } else 
-                    {
-                        deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
-                    }
+                    // if self.output_size > 1 
+                    // {
+                    //     deltas.iter().map(|&d| d * crate::activation::softmax_derivative_simple(d)).collect::<Vec<_>>()
+                    // } else 
+                    // {
+                    deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
+                    // }
                 } else 
                 {
                     deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
@@ -157,10 +158,12 @@ impl MlpModel
         batch_size: usize,
         is_classification: bool,
         callback: ProgressCallback,
-        callback_interval: usize
+        callback_interval: usize,
+        //log_dir: &str,
     )
     {
         let mut rng = thread_rng(); // Initialiser le générateur de nombres aléatoires
+        // let mut logger = TensorBoardLogger::new(log_dir);
 
         for epoch in 0..epochs 
         {
@@ -200,6 +203,7 @@ impl MlpModel
             
             let num_batches = if X.len() / batch_size == 0 { 1 } else { X.len() / batch_size };
             let avg_loss = epoch_loss / num_batches as f64;
+            // logger.log_scalar("loss", epoch as u64, avg_loss);
             if epoch % callback_interval == 0 || epoch == epochs - 1 
             {
                 callback(epoch as c_int, avg_loss);
