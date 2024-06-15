@@ -1,13 +1,17 @@
 use crate::neural_matrix::NeuralMatrix;
 use crate::interop::ProgressCallback;
-use std::os::raw::{c_double, c_char, c_int};
-use crate::activation::{tanh, relu, relu_derivative, tanh_derivative, softmax, softmax_derivative};
-use crate::tensorboard::TensorBoardLogger;
+use std::os::raw::{c_int};
+use crate::activation::{tanh_derivative, softmax_derivative};
 use crate::optimizer::GradientDescent;
+use crate::helpers::{generate_save_dir, generate_log_dir};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+use serde::{Serialize, Deserialize};
+use std::fs;
+use std::env;
+use tensorboard_rs::summary_writer::SummaryWriter;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct MlpModel 
 {
     layer: usize,
@@ -19,7 +23,6 @@ pub struct MlpModel
 
 impl MlpModel 
 {
-
 
     // _________________________________ Init _________________________________
     pub fn init(neurons_size: Vec<usize>, learning_rate: f64) -> Self 
@@ -40,9 +43,8 @@ impl MlpModel
             output_size,
         }
     }
+    
 
-
-   
 
     //_________________________________ Propagate _________________________________
     pub fn propagate(&self, inputs: &[f64], is_classification: bool) -> Vec<f64> 
@@ -75,16 +77,17 @@ impl MlpModel
     // _________________________________ Backward _________________________________
     pub fn backward(&mut self, activations: &[Vec<f64>], target: &[f64], is_classification: bool) -> f64 
     {
-        let last_layer_output_size = self.neural_matrix.last().unwrap().output_size;
  
         let mut deltas = if is_classification
         {
             if self.output_size > 1
             {
-                crate::activation::softmax_derivative(activations.last().unwrap(), &target.to_vec())
+                let derivative_softmax = softmax_derivative(activations.last().unwrap());
+                activations.last().unwrap().iter().zip(target.iter()).zip(derivative_softmax.iter()).map(|((&output, &target), &d_softmax)| (output - target) * d_softmax).collect::<Vec<_>>()
+
             }else
             {
-                activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| (output - target) * crate::activation::tanh_derivative(output)).collect::<Vec<_>>()
+                activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| (output - target) * tanh_derivative(output)).collect::<Vec<_>>()
             }
         } else 
         {
@@ -111,16 +114,10 @@ impl MlpModel
             {
                 if is_classification 
                 {
-                    // if self.output_size > 1 
-                    // {
-                    //     deltas.iter().map(|&d| d * crate::activation::softmax_derivative_simple(d)).collect::<Vec<_>>()
-                    // } else 
-                    // {
-                    deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
-                    // }
+                    deltas.iter().map(|&d| d * tanh_derivative(d)).collect::<Vec<_>>()
                 } else 
                 {
-                    deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
+                    deltas.iter().map(|&d| d * tanh_derivative(d)).collect::<Vec<_>>()
                 }
             };
             
@@ -148,75 +145,132 @@ impl MlpModel
     }
 
 
+    
+   //________________________ checkpoint save ________________________
+   pub fn save(&self, filename: &str) -> Result<(), std::io::Error> 
+   {
+       let serialized = serde_json::to_string(&self)?;
+       std::fs::write(filename, serialized)?;
+       Ok(())
+   }
+
+
+   //________________________ checkpoint load ________________________
+   pub fn load(filename: &str) -> Result<Self, std::io::Error> 
+   {
+       let data = std::fs::read_to_string(filename)?;
+       let model: MlpModel = serde_json::from_str(&data)?;
+       Ok(model)
+   }
+
+   
    
 
     // _________________________________ Train _________________________________
     pub fn train(
-        &mut self, X: &[Vec<f64>], 
+        &mut self, x: &[Vec<f64>], 
         y: &[Vec<f64>], 
         epochs: usize, 
         batch_size: usize,
         is_classification: bool,
         callback: ProgressCallback,
         callback_interval: usize,
-        //log_dir: &str,
+        checkpoint_enable: bool,
+        checkpoint_interval: usize,
+        log_enable: bool,
+        tag: &str
     )
     {
-        let mut rng = thread_rng(); // Initialiser le générateur de nombres aléatoires
-        // let mut logger = TensorBoardLogger::new(log_dir);
+        let mut rng = thread_rng();
+        let save_dir = generate_save_dir(&self.neural_matrix.iter().map(|layer| layer.output_size).collect::<Vec<usize>>(), self.optimizer.learning_rate, epochs, batch_size);
+        let current_dir = env::current_dir().expect("Impossible d'obtenir le répertoire courant");
+        let full_checkpoint_dir = current_dir.join("modele/save/mlp").join(save_dir.clone());
+        let full_checkpoint_path = full_checkpoint_dir.as_path();
+        
+        let log_dir = generate_log_dir(&self.neural_matrix.iter().map(|layer| layer.output_size).collect::<Vec<usize>>(), self.optimizer.learning_rate, epochs, batch_size, tag);
+        let full_log_dir = format!("modele/log/{}", log_dir);
+
+        let mut writer = if log_enable { Some(SummaryWriter::new(&full_log_dir)) } 
+        else { None };
+
+
+        if checkpoint_enable
+        {
+            if !full_checkpoint_path.exists() 
+            {
+                if let Err(e) = fs::create_dir_all(&full_checkpoint_dir) 
+                {
+                    eprintln!("Erreur lors de la création du répertoire de sauvegarde: {}", e);
+                } else {
+                    println!("Répertoire de sauvegarde créé: {:?}", full_checkpoint_dir);
+                }
+            }
+        }
 
         for epoch in 0..epochs 
         {
+            // let mut map = HashMap::new();
+
             let mut epoch_loss = 0.0;
 
-            // Créer un vecteur d'indices et le mélanger
-            let mut indices: Vec<usize> = (0..X.len()).collect();
+            let mut indices: Vec<usize> = (0..x.len()).collect();
             indices.shuffle(&mut rng);
 
-            // Utiliser les indices mélangés pour accéder aux éléments de X et y
-            // for &i in indices.iter() 
+            
             for batch_indices in indices.chunks(batch_size)
-            // for (inputs, target) in X.iter().zip(y.iter())
             {
                 let mut batch_loss = 0.0;
-                // let inputs = &X[i];
-                // let target = &y[i];
-
                 for &i in batch_indices 
                 {
-                    let inputs = &X[i];
+                    let inputs = &x[i];
                     let target = &y[i];
 
                     let activations = self.forward(inputs, is_classification);
                     batch_loss += self.backward(&activations, target, is_classification);
                 }
 
-                // let activations = self.forward(inputs, is_classification);
-                // epoch_loss += self.backward(&activations, target, is_classification);
-                epoch_loss += batch_loss / batch_indices.len() as f64;
+                epoch_loss += batch_loss
             }
-            // let avg_loss = epoch_loss / X.len() as f64;
-            // if epoch % callback_interval == 0 || epoch == epochs - 1 
-            // {
-            //     callback(epoch as c_int, avg_loss);
-            // }
             
-            let num_batches = if X.len() / batch_size == 0 { 1 } else { X.len() / batch_size };
-            let avg_loss = epoch_loss / num_batches as f64;
-            // logger.log_scalar("loss", epoch as u64, avg_loss);
+            let avg_loss = epoch_loss / x.len() as f64;
+
+           
+            if let Some(writer) = writer.as_mut() 
+            {
+                writer.add_scalar("loss", avg_loss as f32, epoch);
+                writer.flush();
+            }
+
             if epoch % callback_interval == 0 || epoch == epochs - 1 
             {
                 callback(epoch as c_int, avg_loss);
             }
+
+            if epoch % checkpoint_interval == 0 && checkpoint_enable || epoch == epochs && checkpoint_enable
+            {
+                let checkpoint_path = full_checkpoint_path.join(format!("checkpoint_epoch_{}.json", epoch));
+                if let Err(e) = self.save(checkpoint_path.to_str().unwrap()) 
+                {
+                    eprintln!("Erreur lors de la sauvegarde du modèle: {}", e);
+                } else 
+                {
+                    println!("Modèle sauvegardé à l'epoch {}", epoch);
+                }
+            }
+
         }
+        
     }
 
     
+    //________________________ Predict ________________________
 
     pub fn predict(&self, inputs: &[f64], is_classification: bool) -> Vec<f64> 
     {
         self.propagate(inputs, is_classification)
     }
+
+
 }
 
 

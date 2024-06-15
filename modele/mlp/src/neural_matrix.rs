@@ -1,8 +1,8 @@
 extern crate rand;
-
+use serde::{Serialize, Deserialize};
 use rand::Rng;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NeuralMatrix 
 {
     pub(crate) matrix: Vec<Vec<f64>>,
