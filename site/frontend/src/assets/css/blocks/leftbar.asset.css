@@ -1,0 +1,40 @@
+.leftbar
+{
+
+    position: relative;
+    height: 100%;
+    width: 20%;
+    left: 0;
+    border-right: 2px solid white;
+    gap: 3em;
+}
+
+.leftbar > *
+{
+    width: 100%;
+}
+
+.leftbar-core
+{
+    height: 80%;
+}
+.leftbar-core > * 
+{
+    width: 100%;
+    margin-left: 2em;
+}
+
+.leftbar-modele-core, .leftbar-parameter-core, .leftbar-data-core
+{
+    gap: 2em;
+}
+
+
+.modele-box 
+{
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor:pointer;
+}

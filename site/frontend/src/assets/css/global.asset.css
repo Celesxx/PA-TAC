@@ -1,0 +1,51 @@
+html
+{
+    --bg-color : #0e1117;
+    --tx-color: #FFFFFF;
+    background: var(--bg-color);
+    color: var(--tx-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+html, body
+{
+    
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+}
+
+#root
+{
+    height: 100%;
+    width: 100%;
+}
+
+h1, h2, h3, h4, h5, p, input
+{
+    /* all: unset;  */
+    margin: 0; 
+    padding: 0;
+    /* font-family: 'Loos Extended'; */
+}
+
+.f { display: flex;}
+.f-row { flex-direction: row; }
+.f-reverse-row { flex-direction: row-reverse;}
+.f-column { flex-direction: column; }
+.f-reverse-column { flex-direction: column-reverse; }
+.f-justify-around { justify-content: space-around;}
+.f-justify-between { justify-content: space-between;}
+.f-justify-start { justify-content: flex-start;}
+.f-justify-end { justify-content: flex-end;}
+.f-justify-center { justify-content: center;}
+.f-content-start {align-content: flex-start;}
+.f-content-end {align-content: flex-end;}
+.f-content-center {align-content: center;}
+.f-align-start {align-items: flex-start;}
+.f-align-end {align-items: flex-end;}
+.f-align-center {align-items: center;}
+
