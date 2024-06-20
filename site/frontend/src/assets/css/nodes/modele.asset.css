@@ -1,0 +1,41 @@
+
+.node-modele-header 
+{
+  margin: 15px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.node-modele-separator 
+{
+  height: 2px;
+  background: white;
+  margin: 15px 0;
+}
+
+.node-modele-args 
+{
+  margin: 15px;
+  font-size: 0.9em;
+  gap: 1em;
+}
+
+.node-modele-arg
+{
+  flex: 0 0 45%;
+}
+  
+
+.node-modele-handles
+{
+  /* display: flex;
+  flex-direction: row; */
+
+}
+
+.node-modele-handle 
+{
+  position: relative;
+  width: 10px;
+  height: 10px;
+}

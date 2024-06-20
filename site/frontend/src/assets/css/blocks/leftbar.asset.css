@@ -17,7 +17,9 @@
 .leftbar-core
 {
     height: 80%;
+    width: 100%;
 }
+
 .leftbar-core > * 
 {
     width: 100%;
@@ -30,11 +32,43 @@
 }
 
 
+.leftbar-modele-box 
+{
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 80%;
+    gap: 1em;
+    padding-bottom: 10px; 
+  }
+  
+.leftbar-modele-box::-webkit-scrollbar 
+{
+    height: 10px;
+    background-color: transparent;
+}
+
+.leftbar-modele-box::-webkit-scrollbar-thumb 
+{
+    cursor: pointer;
+    border-radius: 50px;
+    background-color: white !important;
+    border: 1px solid #fff !important;
+}
+
+.leftbar-modele-box::-webkit-scrollbar-track 
+{
+    border-radius: 50px;
+    background-color: transparent;
+    border: 1px solid #fff !important;
+}
+
+
 .modele-box 
 {
     padding: 10px;
-    margin: 10px 0;
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor:pointer;
+    width: 200px;
 }

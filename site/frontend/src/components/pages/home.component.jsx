@@ -1,15 +1,18 @@
 import '../../assets/css/global.asset.css';
 import '../../assets/css/pages/home.asset.css';
 import React from "react";
-import Interface from "../../components/blocks/interface.component.jsx"
-import Result from "../../components/blocks/result.component.jsx"
-import Leftbar from "../../components/blocks/leftbar.component.jsx"
+import Interface from "../blocks/interface.component.jsx"
+import Result from "../blocks/result.component.jsx"
+import Leftbar from "../blocks/leftbar.component.jsx"
 import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
+import CustomNode from '../nodes/modele.node.jsx';
 
+const nodeTypes = {
+  selectorNode: CustomNode
+};
 
 class Home extends React.Component 
 {
-
   constructor(props) 
   {
     super(props);
@@ -21,31 +24,21 @@ class Home extends React.Component
     };
   }
 
-  onNodesChange = (changes) => 
-  {
-      this.setState({ nodes: applyNodeChanges(changes, this.state.nodes) });
-  };
+  onNodesChange = (changes) => { this.setState({ nodes: applyNodeChanges(changes, this.state.nodes) }); };
+  onEdgesChange = (changes) => { this.setState({ edges: applyEdgeChanges(changes, this.state.edges) }); };
+  onConnect = (params) => { this.setState({ edges: addEdge(params, this.state.edges) }); };
   
-  onEdgesChange = (changes) => 
-  {
-      this.setState({ edges: applyEdgeChanges(changes, this.state.edges) });
-  };
-  
-  onConnect = (params) => 
-  {
-      this.setState({ edges: addEdge(params, this.state.edges) });
-  };
-  
-  onAddNode = (type) => 
+  onAddNode = (type, args) => 
   {
       const { nodes, nodeIndex } = this.state;
       const position = { x: 200, y: nodeIndex * 75 };
       const newNode = 
       {
         id: this.getId(),
-        type,
+        type: 'selectorNode',
         position,
-        data: { label: `${type} node` },
+        data: { label: `${type} node`, args: args },
+        className: 'modele-node',
       };
   
       this.setState(
@@ -84,6 +77,7 @@ class Home extends React.Component
                   onEdgesChange={this.onEdgesChange} 
                   onConnect={this.onConnect} 
                   onNodesDelete={this.onNodesDelete}
+                  nodeTypes={nodeTypes}
                 />
                 <Result/>
               </div>
