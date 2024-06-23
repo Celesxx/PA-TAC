@@ -13,7 +13,7 @@ class Interface extends React.Component
 
     render()
     {
-        const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodesDelete, nodeTypes } = this.props;
+        const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodesDelete, nodeTypes, isValidConnection } = this.props;
         return (
             <div className="interface-core f f-justify-center f-align-center" ref={(ref) => { this.reactFlowWrapper = ref; }} onDrop={this.onDrop} onDragOver={this.onDragOver} style={{ height: 500 }}>
                 <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onNodesDelete={onNodesDelete} nodeTypes={nodeTypes}>

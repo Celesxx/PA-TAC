@@ -5,10 +5,15 @@ import Interface from "../blocks/interface.component.jsx"
 import Result from "../blocks/result.component.jsx"
 import Leftbar from "../blocks/leftbar.component.jsx"
 import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
-import CustomNode from '../nodes/modele.node.jsx';
+import ModeleNode from '../nodes/modele.node.jsx';
+import ParameterNode from '../nodes/parameter.node.jsx';
+import FonctionNode from '../nodes/fonction.node.jsx';
 
-const nodeTypes = {
-  selectorNode: CustomNode
+const nodeTypes = 
+{
+  modele_node: ModeleNode,
+  fonction_node: FonctionNode,
+  parameter_node: ParameterNode
 };
 
 class Home extends React.Component 
@@ -18,6 +23,7 @@ class Home extends React.Component
     super(props);
     this.state = 
     {
+      id: 0,
       nodes: [],
       edges: [],
       nodeIndex: 1
@@ -26,21 +32,30 @@ class Home extends React.Component
 
   onNodesChange = (changes) => { this.setState({ nodes: applyNodeChanges(changes, this.state.nodes) }); };
   onEdgesChange = (changes) => { this.setState({ edges: applyEdgeChanges(changes, this.state.edges) }); };
-  onConnect = (params) => { this.setState({ edges: addEdge(params, this.state.edges) }); };
+  onConnect = (params) => { this.setState({ edges: addEdge({ ...params, animated: true, className: "nodes-edges", type : "smoothstep" }, this.state.edges) }); };
   
-  onAddNode = (type, args) => 
+  isValidConnection = (connection) => {
+    // Restreindre les connexions à un seul connecteur spécifique par identifiant
+    // return connection.sourceHandle === 'source-1' && connection.targetHandle === 'target-1';
+  };
+
+  onAddNode = (name, input, output, type) => 
   {
       const { nodes, nodeIndex } = this.state;
       const position = { x: 200, y: nodeIndex * 75 };
       const newNode = 
       {
         id: this.getId(),
-        type: 'selectorNode',
+        type: '',
         position,
-        data: { label: `${type} node`, args: args },
+        data: { label: `${name}`, input: input, output: output, isConnectable: true},
         className: 'modele-node',
       };
-  
+      
+      if(type == "modele_node") { newNode.type = 'modele_node'; }
+      else if(type == "fonction_node") { newNode.type = 'fonction_node'; }
+      else if(type == "parameter_node") { newNode.type = 'parameter_node'; }
+
       this.setState(
       {
         nodes: [...nodes, newNode],
@@ -78,6 +93,7 @@ class Home extends React.Component
                   onConnect={this.onConnect} 
                   onNodesDelete={this.onNodesDelete}
                   nodeTypes={nodeTypes}
+                  isValidConnection={this.isValidConnection}
                 />
                 <Result/>
               </div>

@@ -3,12 +3,3 @@
     height: 65%;
     width: 100%;
 }
-
-
-.modele-node
-{
-    border-radius: 5px;
-    background-color: var(--bg-color);
-    border: 2px solid white;
-    color: white;
-}

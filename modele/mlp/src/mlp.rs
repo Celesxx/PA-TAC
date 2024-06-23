@@ -151,7 +151,9 @@ impl MlpModel
         target: &[f64], 
         is_classification: bool,
         weight_gradients: &mut Vec<Vec<Vec<f64>>>, 
-        bias_gradients: &mut Vec<Vec<f64>>
+        bias_gradients: &mut Vec<Vec<f64>>,
+        is_last_chunk: bool,
+        batch_len: f64
     ) -> f64 
     {
         let mut deltas = if is_classification 
@@ -163,7 +165,7 @@ impl MlpModel
 
             }else 
             {
-                activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| (output - target) * crate::activation::tanh_derivative(output)).collect::<Vec<_>>()
+                activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| (output - target) * tanh_derivative(output)).collect::<Vec<_>>()
             }
         } else 
         {
@@ -190,21 +192,31 @@ impl MlpModel
             {
                 if is_classification 
                 {
-                    deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
+                    deltas.iter().map(|&d| d * tanh_derivative(d)).collect::<Vec<_>>()
                 } else 
                 {
-                    deltas.iter().map(|&d| d * crate::activation::tanh_derivative(d)).collect::<Vec<_>>()
+                    deltas.iter().map(|&d| d * tanh_derivative(d)).collect::<Vec<_>>()
                 }
             };
     
             // Accumulation des gradients
-            for (j, neuron_weights) in layer.matrix.iter().enumerate() 
+            for (j, neuron_weights) in layer.matrix.iter_mut().enumerate() 
             {
                 for k in 0..neuron_weights.len() 
                 {
                     weight_gradients[i][j][k] += delta[j] * activations[i][k];
+                    if is_last_chunk 
+                    {
+                        neuron_weights[k] -= self.optimizer.learning_rate * weight_gradients[i][j][k] / batch_len;
+                        weight_gradients[i][j][k] = 0.0;
+                    }
                 }
                 bias_gradients[i][j] += delta[j];
+                if is_last_chunk 
+                { 
+                    layer.bias[j] -= self.optimizer.learning_rate * bias_gradients[i][j] / batch_len;
+                    bias_gradients[i][j] = 0.0;
+                }
             }
     
             // Calcule de l'erreur précédente en multipliant par le delta actuel
@@ -215,6 +227,7 @@ impl MlpModel
         }
         loss
     }
+    
 
 
     
@@ -290,47 +303,46 @@ impl MlpModel
 
 
             // ------------------------------ Initialisation gradient vector ------------------------------  
-            // let mut weight_gradients: Vec<Vec<Vec<f64>>> = self.neural_matrix.iter()
-            //     .map(|layer| vec![vec![0.0; layer.input_size]; layer.output_size])
-            //     .collect();
+            let mut weight_gradients: Vec<Vec<Vec<f64>>> = self.neural_matrix.iter()
+                .map(|layer| vec![vec![0.0; layer.input_size]; layer.output_size])
+                .collect();
 
-            // let mut bias_gradients: Vec<Vec<f64>> = self.neural_matrix.iter()
-            //     .map(|layer| vec![0.0; layer.output_size])
-            //     .collect();
+            let mut bias_gradients: Vec<Vec<f64>> = self.neural_matrix.iter()
+                .map(|layer| vec![0.0; layer.output_size])
+                .collect();
+
             
             for batch_indices in indices.chunks(batch_size)
             {
-                
-                let mut weight_gradients = 0.0;
-                let mut bias_gradients = 0.0;
-                let mut total_batch_loss = 0.0;
+                let batch_len = batch_indices.len() as f64;
+                let mut batch_loss = 0.0;
 
-                for &i in batch_indices 
+                // for &i in batch_indices 
+                for (indice, &i) in batch_indices.iter().enumerate()
                 {
+                    let is_last_in_chunk = indice == batch_indices.len() - 1;
                     let inputs = &x[i];
                     let target = &y[i];
                     
                     let activations = self.forward(inputs, is_classification);
                     // batch_loss += self.backward(&activations, target, is_classification);
-                    batch_loss += self.backward(&activations, target, is_classification);batch_loss += self.backward(&activations, target, is_classification);
-                    total_batch_loss += batch_loss;
-                    weight_gradients += weight_gradient;
-                    bias_gradients += bias_gradient;
+                    // batch_loss += self.backward(&activations, target, is_classification, &mut weight_gradients, &mut bias_gradients);
+                    batch_loss += self.backward(&activations, target, is_classification, &mut weight_gradients, &mut bias_gradients, is_last_in_chunk, batch_len);
                 }
 
-                for (layer_index, layer) in self.neural_matrix.iter_mut().enumerate() 
-                {
-                    for (neuron_index, neuron_weights) in layer.matrix.iter_mut().enumerate() 
-                    {
-                        for k in 0..neuron_weights.len() 
-                        {
-                            neuron_weights[k] -= weight_gradients[layer_index][neuron_index][k] / batch_indices.len() as f64;
-                            neuron_weights[k] = neuron_weights[k].clamp(-2000f64, 2000f64);
-                        }
-                        layer.bias[neuron_index] -= bias_gradients[layer_index][neuron_index] / batch_indices.len() as f64;
-                        layer.bias[neuron_index] = layer.bias[neuron_index].clamp(-2000f64, 2000f64);
-                    }
-                }
+                // for (layer_index, layer) in self.neural_matrix.iter_mut().enumerate() 
+                // {
+                //     for (neuron_index, neuron_weights) in layer.matrix.iter_mut().enumerate() 
+                //     {
+                //         for k in 0..neuron_weights.len() 
+                //         {
+                //             neuron_weights[k] -= (weight_gradients[layer_index][neuron_index][k]) / len;
+                //             neuron_weights[k] = neuron_weights[k].clamp(-2000f64, 2000f64);
+                //         }
+                //         layer.bias[neuron_index] -= (bias_gradients[layer_index][neuron_index]) / len;
+                //         layer.bias[neuron_index] = layer.bias[neuron_index].clamp(-2000f64, 2000f64);
+                //     }
+                // }
 
                 epoch_loss += batch_loss
             }

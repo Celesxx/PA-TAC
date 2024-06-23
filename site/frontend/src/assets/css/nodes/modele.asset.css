@@ -1,41 +1,103 @@
-
-.node-modele-header 
+.nodes-edges > path
 {
-  margin: 15px;
+  stroke: white !important;
+}
+
+.modele-node, .fonction-node, .parameter-node
+{
+    border-radius: 5px;
+    background-color: rgba(14, 17, 23, 1);
+    /* border: 2px solid white; */
+    color: white;
+}
+
+.node-modele-header, .node-fonction-header, .node-parameter-header
+{
+  padding: 10px !important;
+  margin: 0 !important;
+  height: 100%;
   font-weight: bold;
   margin-bottom: 5px;
+  background-color: rgba(81, 0, 0, 0.7);
+  border: 2px solid rgba(81, 0, 0, 0.7);
 }
 
-.node-modele-separator 
+.node-modele-separator, .node-fonction-separator, .node-parameter-separator
 {
-  height: 2px;
+  /* height: 2px; */
   background: white;
-  margin: 15px 0;
 }
 
-.node-modele-args 
+.node-modele-args, .node-fonction-args, .node-parameter-args
 {
-  margin: 15px;
+  border: 2px solid rgba(81, 0, 0, 0.7);
+  border-top: 0px;
+  gap: 3em;
+
+} 
+
+
+.node-modele-args-container, .node-fonction-args-container, .node-parameter-args-container
+{
+  padding: 15px 5px 15px 5px;
   font-size: 0.9em;
   gap: 1em;
 }
 
-.node-modele-arg
-{
-  flex: 0 0 45%;
-}
-  
-
-.node-modele-handles
-{
-  /* display: flex;
-  flex-direction: row; */
-
-}
-
-.node-modele-handle 
+.node-modele-input, .node-modele-output, .node-fonction-input, .node-fonction-output, .node-parameter-input, .node-parameter-output
 {
   position: relative;
+  gap: 1em;
+}
+
+.node-modele-output, .node-fonction-output, .node-parameter-output
+{
+  flex-direction: row-reverse;
+}
+
+.node-modele-handle, .node-fonction-handle, .node-parameter-handle 
+{
+  position: relative;
+  right: inherit;
+  top: inherit;
+  left: inherit;
+  transform: inherit;
+  padding: 0;
   width: 10px;
   height: 10px;
+}
+
+
+/*----------------------- Fonction Node -----------------------*/
+
+
+.node-fonction-header
+{
+  background-color: rgba(0, 81, 11, 0.7);
+  border: 2px solid rgba(0, 81, 11, 0.7);
+}
+
+.node-fonction-args 
+{
+  border: 2px solid rgba(0, 81, 11, 0.7);
+  border-top: 0px;
+}
+
+
+
+
+
+/*----------------------- Parameter Node -----------------------*/
+
+
+.node-parameter-header 
+{
+  background-color: rgba(0, 1, 81, 0.7);
+  border: 2px solid rgba(0, 1, 81, 0.7);
+}
+
+.node-parameter-args
+{
+  border: 2px solid rgba(0, 1, 81, 0.7);
+  border-top: 0px;
 }
