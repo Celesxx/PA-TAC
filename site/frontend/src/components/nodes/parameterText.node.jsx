@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../assets/css/nodes/modele.asset.css'; 
 import { Handle, Position } from 'reactflow';
 
-const ParameterNode = ({ data }) => 
+const ParameterTextNode = ({ data }) => 
 {
+
+  const [inputValue, setInputValue] = useState(1);
+
+  const handleInputChange = (event) => 
+  {
+    const value = event.target.value;
+    if (value === '' || (Number(value) >= 0 && !isNaN(Number(value)))) { setInputValue(value); }
+  };
+
   return (
     <div className="node-parameter">
       <div className="node-parameter-header">
@@ -27,8 +36,17 @@ const ParameterNode = ({ data }) =>
           ))}
         </div>
       </div>
+      <div className="node-textbox-input-container f f-column f-align-center f-justify-center">
+        <input 
+          type="number" 
+          min="0" 
+          value={inputValue} 
+          onChange={handleInputChange} 
+          className="textbox"
+        />
+      </div>
     </div>
   );
 };
 
-export default ParameterNode;
+export default ParameterTextNode;

@@ -1,0 +1,87 @@
+{
+    "modeles": [
+      {
+        "name": "Perceptron Multi Couche",
+        "input": ["Initialisation", "Entrainement", "Prédiction", "Libération mémoire"],
+        "output": [],
+        "type": "modele_node"
+      },
+      {
+        "name": "Radial Basis Function",
+        "input": ["Initialisation", "Entrainement", "Prédiction", "Libération mémoire"],
+        "output": [],
+        "type": "modele_node"
+      }
+    ],
+    "methodes": [
+      {
+        "name": "Initialisation",
+        "input": ["Learning rate", "Neuronnes"],
+        "output": ["modèle"],
+        "type": "fonction_node"
+      },
+      {
+        "name": "Entrainement",
+        "input": ["Epochs", "Batch size", "Classification", "Callback", "Log", "Dataset"],
+        "output": ["Modèle"],
+        "type": "fonction_node"
+      },
+      {
+        "name": "Prédiction",
+        "input": ["Type", "Dataset"],
+        "output": ["modèle"],
+        "type": "fonction_node"
+      },
+      {
+        "name": "Libération mémoire",
+        "input": [],
+        "output": ["modèle"],
+        "type": "fonction_node"
+      }
+    ],
+    "parametres": [
+      {
+        "name": "Learning rate",
+        "input": [],
+        "output": ["Initialisation"],
+        "type": "parameter_slider_node"
+      },
+      {
+        "name": "Epochs",
+        "input": [],
+        "output": ["Entrainement"],
+        "type": "parameter_slider_node"
+      },
+      {
+        "name": "Batch size",
+        "input": [],
+        "output": ["Entrainement"],
+        "type": "parameter_slider_node"
+      },
+      {
+        "name": "Couche du modèle",
+        "input": [],
+        "output": ["Initialisation"],
+        "type": "parameter_node"
+      },
+      {
+        "name": "Callback",
+        "input": [],
+        "output": ["Entrainement"],
+        "type": "parameter_slider_bool_node"
+      },
+      {
+        "name": "Log",
+        "input": [],
+        "output": ["Entrainement"],
+        "type": "parameter_slider_bool_node"
+      },
+      {
+        "name": "Classification",
+        "input": [],
+        "output": ["Entrainement"],
+        "type": "parameter_bool_node"
+      }
+    ]
+  }
+  

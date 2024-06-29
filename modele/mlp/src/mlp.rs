@@ -74,76 +74,6 @@ impl MlpModel
 
 
 
-    // _________________________________ Backward _________________________________
-    // pub fn backward(&mut self, activations: &[Vec<f64>], target: &[f64], is_classification: bool) -> f64 
-    // {
- 
-    //     let mut deltas = if is_classification
-    //     {
-    //         if self.output_size > 1
-    //         {
-    //             let derivative_softmax = softmax_derivative(activations.last().unwrap());
-    //             activations.last().unwrap().iter().zip(target.iter()).zip(derivative_softmax.iter()).map(|((&output, &target), &d_softmax)| (output - target) * d_softmax).collect::<Vec<_>>()
-
-    //         }else
-    //         {
-    //             activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| (output - target) * tanh_derivative(output)).collect::<Vec<_>>()
-    //         }
-    //     } else 
-    //     {
-    //         activations.last().unwrap().iter().zip(target.iter()).map(|(&output, &target)| output - target).collect::<Vec<_>>()
-    //     };
-
-
-    //     //Calcul du loss par rapport au précédent
-    //     let mut loss = 0.0;
-    //     for (output, &target) in activations.last().unwrap().iter().zip(target.iter()) 
-    //     {
-    //         loss += (output - target).powi(2);
-    //     }
-        
-
-    //     let num_layers = self.neural_matrix.len();
-    //     //Parcours les couches neuronnes en sens inverse
-    //     for (i, layer) in self.neural_matrix.iter_mut().enumerate().rev() 
-    //     {
-    //         let delta = if i == num_layers - 1 
-    //         {
-    //             deltas.clone()
-    //         } else 
-    //         {
-    //             if is_classification 
-    //             {
-    //                 deltas.iter().map(|&d| d * tanh_derivative(d)).collect::<Vec<_>>()
-    //             } else 
-    //             {
-    //                 deltas.iter().map(|&d| d * tanh_derivative(d)).collect::<Vec<_>>()
-    //             }
-    //         };
-            
-          
-    //         //------------------------ update des poids ------------------------
-    //         //Parcours les couches
-    //         for (j, neuron_weights) in layer.matrix.iter_mut().enumerate() 
-    //         {
-    //             //parcours les neuronnes
-    //             for k in 0..neuron_weights.len() 
-    //             {
-    //                 //met à jours les poids
-    //                 neuron_weights[k] -= self.optimizer.learning_rate * delta[j] * activations[i][k];
-    //             }
-    //             //Met a jour le biais
-    //             layer.bias[j] -= self.optimizer.learning_rate * delta[j];
-    //         }
-
-    //         // Calcule de l'erreur précédente en multipliant par le delta actuel
-    //         deltas = (0..layer.input_size).map(|k| {
-    //             delta.iter().zip(layer.matrix.iter().map(|w| w[k])).map(|(d, w)| d * w).sum()
-    //         }).collect::<Vec<_>>();
-    //     }
-    //     loss
-    // }
-
 
     pub fn backward(
         &mut self, 
@@ -294,8 +224,6 @@ impl MlpModel
 
         for epoch in 0..epochs 
         {
-            // let mut map = HashMap::new();
-
             let mut epoch_loss = 0.0;
 
             let mut indices: Vec<usize> = (0..x.len()).collect();
@@ -317,7 +245,6 @@ impl MlpModel
                 let batch_len = batch_indices.len() as f64;
                 let mut batch_loss = 0.0;
 
-                // for &i in batch_indices 
                 for (indice, &i) in batch_indices.iter().enumerate()
                 {
                     let is_last_in_chunk = indice == batch_indices.len() - 1;
@@ -325,24 +252,9 @@ impl MlpModel
                     let target = &y[i];
                     
                     let activations = self.forward(inputs, is_classification);
-                    // batch_loss += self.backward(&activations, target, is_classification);
-                    // batch_loss += self.backward(&activations, target, is_classification, &mut weight_gradients, &mut bias_gradients);
                     batch_loss += self.backward(&activations, target, is_classification, &mut weight_gradients, &mut bias_gradients, is_last_in_chunk, batch_len);
                 }
 
-                // for (layer_index, layer) in self.neural_matrix.iter_mut().enumerate() 
-                // {
-                //     for (neuron_index, neuron_weights) in layer.matrix.iter_mut().enumerate() 
-                //     {
-                //         for k in 0..neuron_weights.len() 
-                //         {
-                //             neuron_weights[k] -= (weight_gradients[layer_index][neuron_index][k]) / len;
-                //             neuron_weights[k] = neuron_weights[k].clamp(-2000f64, 2000f64);
-                //         }
-                //         layer.bias[neuron_index] -= (bias_gradients[layer_index][neuron_index]) / len;
-                //         layer.bias[neuron_index] = layer.bias[neuron_index].clamp(-2000f64, 2000f64);
-                //     }
-                // }
 
                 epoch_loss += batch_loss
             }

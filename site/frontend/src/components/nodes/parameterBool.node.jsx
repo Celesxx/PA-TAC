@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../assets/css/nodes/modele.asset.css'; 
 import { Handle, Position } from 'reactflow';
 
-const ParameterNode = ({ data }) => 
+const ParameterBoolNode = ({ data }) => 
 {
+
+  const [parameterValue, setParameterValue] = useState(true);
+  const toggleParameter = () => { setParameterValue(prevValue => !prevValue); };
+
   return (
     <div className="node-parameter">
       <div className="node-parameter-header">
@@ -27,8 +31,13 @@ const ParameterNode = ({ data }) =>
           ))}
         </div>
       </div>
+      <div className="node-parameter-button f f-row f-align-center f-justify-center">
+        <button onClick={toggleParameter}>
+          {parameterValue ? 'True' : 'False'}
+        </button>
+      </div>
     </div>
   );
 };
 
-export default ParameterNode;
+export default ParameterBoolNode;

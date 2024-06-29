@@ -31,7 +31,10 @@
     gap: 2em;
 }
 
-
+.leftbar-modele-title
+{
+    font-size: 20px;
+}
 .leftbar-modele-box 
 {
     display: flex;
@@ -44,7 +47,7 @@
   
 .leftbar-modele-box::-webkit-scrollbar 
 {
-    height: 10px;
+    height: 5px;
     background-color: transparent;
 }
 
@@ -52,23 +55,97 @@
 {
     cursor: pointer;
     border-radius: 50px;
-    background-color: white !important;
-    border: 1px solid #fff !important;
+    background-color: rgba(81, 0, 0, 1) !important;
+    border: 1px solid rgba(111, 0, 0, 1) !important;
+    box-shadow: 0 4px 6px rgba(255, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.leftbar-methode-box::-webkit-scrollbar-thumb 
+{
+    background-color: rgba(0, 81, 11, 1) !important;
+    border: 1px solid rgba(0, 111, 11, 1) !important;
+    box-shadow: 0 4px 6px rgba(0, 255, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.leftbar-parametre-box::-webkit-scrollbar-thumb 
+{
+    border: 1px solid rgba(0, 2, 160, 1) !important;
+    background-color: rgba(0, 2, 111, 1) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 255, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 .leftbar-modele-box::-webkit-scrollbar-track 
 {
     border-radius: 50px;
     background-color: transparent;
-    border: 1px solid #fff !important;
+    border: 1px solid rgba(81, 0, 0, 1) !important;
+    box-shadow: 0 4px 6px rgba(255, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
 }
 
+.leftbar-methode-box::-webkit-scrollbar-track 
+{
+    border: 1px solid rgba(0, 81, 11, 1) !important;
+    box-shadow: 0 4px 6px rgba(0, 255, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
 
-.modele-box 
+.leftbar-parametre-box::-webkit-scrollbar-track 
+{
+    border: 1px solid rgba(0, 2, 160, 1) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.modele-box, .methode-box, .parametre-box 
 {
     padding: 10px;
-    border: 1px solid #ddd;
     border-radius: 4px;
     cursor:pointer;
     width: 200px;
+    transition: all 0.3s ease-in-out;
+}
+.modele-box
+{
+    border: 1px solid rgb(118, 2, 2);
+    background-color: rgba(81, 0, 0, 1);
+    box-shadow: 0 4px 6px rgba(255, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.modele-box:hover
+{
+    border: 1px solid rgb(122, 2, 2);
+    background-color: rgba(96, 2, 2, 1);
+}
+
+.methode-box
+{
+    border: 1px solid rgba(0, 111, 11, 1);
+    background-color: rgba(0, 81, 11, 1);
+    box-shadow: 0 4px 6px rgba(0, 255, 0, 0.2);
+    backdrop-filter: blur(10px);
+} 
+
+.methode-box:hover
+{
+    border: 1px solid rgba(0, 122, 11, 1);
+    background-color: rgba(0, 96, 11, 1);
+}
+
+.parametre-box 
+{
+    border: 1px solid rgba(0, 2, 160, 1);
+    background-color: rgba(0, 2, 111, 1);
+    box-shadow: 0 4px 6px rgba(0, 0, 255, 0.2);
+    backdrop-filter: blur(10px);
+} 
+
+.parametre-box:hover
+{
+    border: 1px solid rgba(0, 2, 181, 1);
+    background-color: rgba(0, 2, 140, 1);
 }

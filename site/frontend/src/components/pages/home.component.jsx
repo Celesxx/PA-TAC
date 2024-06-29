@@ -7,13 +7,21 @@ import Leftbar from "../blocks/leftbar.component.jsx"
 import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import ModeleNode from '../nodes/modele.node.jsx';
 import ParameterNode from '../nodes/parameter.node.jsx';
+import ParameterBoolNode from '../nodes/parameterBool.node.jsx';
+import ParameterSliderNode from '../nodes/parameterSlider.node.jsx';
+import ParameterSliderBoolNode from '../nodes/parameterSliderBool.node.jsx';
+import ParameterTextNode from '../nodes/parameterText.node.jsx';
 import FonctionNode from '../nodes/fonction.node.jsx';
 
 const nodeTypes = 
 {
   modele_node: ModeleNode,
   fonction_node: FonctionNode,
-  parameter_node: ParameterNode
+  parameter_node: ParameterNode,
+  parameter_bool_node: ParameterBoolNode,
+  parameter_slider_node: ParameterSliderNode,
+  parameter_text_node: ParameterTextNode,
+  parameter_slider_bool_node: ParameterSliderBoolNode,
 };
 
 class Home extends React.Component 
@@ -34,11 +42,23 @@ class Home extends React.Component
   onEdgesChange = (changes) => { this.setState({ edges: applyEdgeChanges(changes, this.state.edges) }); };
   onConnect = (params) => { this.setState({ edges: addEdge({ ...params, animated: true, className: "nodes-edges", type : "smoothstep" }, this.state.edges) }); };
   
-  isValidConnection = (connection) => {
-    // Restreindre les connexions à un seul connecteur spécifique par identifiant
-    // return connection.sourceHandle === 'source-1' && connection.targetHandle === 'target-1';
-  };
+  isValidConnection = (connection) => 
+  {
+    console.log(this.state.nodes)
+    const targetNode = this.state.nodes.find(node => node.id === connection.target);
+    if (!targetNode) return false;
 
+    const sourceNode = this.state.nodes.find(node => node.id === connection.source);
+    if (!sourceNode) return false;
+
+    console.log(`Connection target handle: ${connection.targetHandle}, source handle: ${connection.sourceHandle}`);
+    console.log(`Target node label: ${targetNode.data.label}`);
+    console.log(`Source node label: ${sourceNode.data.label}`);
+
+    // Vérifier si le sourceHandle correspond au label du node cible
+    return connection.sourceHandle === targetNode.data.label;
+  };
+  
   onAddNode = (name, input, output, type) => 
   {
       const { nodes, nodeIndex } = this.state;
@@ -46,15 +66,12 @@ class Home extends React.Component
       const newNode = 
       {
         id: this.getId(),
-        type: '',
         position,
         data: { label: `${name}`, input: input, output: output, isConnectable: true},
         className: 'modele-node',
       };
-      
-      if(type == "modele_node") { newNode.type = 'modele_node'; }
-      else if(type == "fonction_node") { newNode.type = 'fonction_node'; }
-      else if(type == "parameter_node") { newNode.type = 'parameter_node'; }
+
+      if(type != "") { newNode.type = type; }
 
       this.setState(
       {
