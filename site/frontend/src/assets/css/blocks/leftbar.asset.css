@@ -9,6 +9,17 @@
     gap: 3em;
 }
 
+.resizer 
+{
+    width: 10px !important;
+    cursor: ew-resize;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    /* background-color: rgba(81, 0, 0, 0.5);  */
+}
+
 .leftbar > *
 {
     width: 100%;
@@ -22,8 +33,7 @@
 
 .leftbar-core > * 
 {
-    width: 100%;
-    margin-left: 2em;
+    width: 95%;
 }
 
 .leftbar-modele-core, .leftbar-parameter-core, .leftbar-data-core
@@ -40,7 +50,7 @@
     display: flex;
     overflow-x: auto;
     white-space: nowrap;
-    width: 80%;
+    width: 100%;
     gap: 1em;
     padding-bottom: 10px; 
   }

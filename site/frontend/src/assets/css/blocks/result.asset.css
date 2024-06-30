@@ -1,6 +1,19 @@
 .result-core
 {
+    position: relative;
     height: 35%;
     width: 100%;
     border-top: 2px solid white;
+    overflow: auto;
+}
+
+.result-resizer 
+{
+    position: absolute;
+    width: 100%;
+    height: 10px !important;
+    cursor: ns-resize;
+    top: 0;
+    left: 0;
+    /* background-color: rgba(81, 0, 0, 0.5);  */
 }

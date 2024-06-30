@@ -33,6 +33,7 @@ class Home extends React.Component
     {
       id: 0,
       nodes: [],
+      nodesData : [],
       edges: [],
       nodeIndex: 1
     };
@@ -42,20 +43,32 @@ class Home extends React.Component
   onEdgesChange = (changes) => { this.setState({ edges: applyEdgeChanges(changes, this.state.edges) }); };
   onConnect = (params) => { this.setState({ edges: addEdge({ ...params, animated: true, className: "nodes-edges", type : "smoothstep" }, this.state.edges) }); };
   
+  updateNodeData = (nodeId, values) => 
+  {
+      this.setState(prevState => 
+      {
+          const existingNodeDataIndex = prevState.nodesData.findIndex(node => node.node === nodeId);
+          if (existingNodeDataIndex >= 0) 
+          {
+              const updatedNodesData = [...prevState.nodesData];
+              updatedNodesData[existingNodeDataIndex].data = { ...updatedNodesData[existingNodeDataIndex].data, ...values };
+              return { nodesData: updatedNodesData };
+          } 
+          else 
+          {
+              return { nodesData: [...prevState.nodesData, { node: nodeId, data: values }] };
+          }
+      });
+  };
+
   isValidConnection = (connection) => 
   {
-    console.log(this.state.nodes)
     const targetNode = this.state.nodes.find(node => node.id === connection.target);
     if (!targetNode) return false;
 
     const sourceNode = this.state.nodes.find(node => node.id === connection.source);
     if (!sourceNode) return false;
 
-    console.log(`Connection target handle: ${connection.targetHandle}, source handle: ${connection.sourceHandle}`);
-    console.log(`Target node label: ${targetNode.data.label}`);
-    console.log(`Source node label: ${sourceNode.data.label}`);
-
-    // Vérifier si le sourceHandle correspond au label du node cible
     return connection.sourceHandle === targetNode.data.label;
   };
   
@@ -98,6 +111,7 @@ class Home extends React.Component
 
   render()
   {
+    const proOptions = { hideAttribution: true };
       return(
           <div className="home f f-row f-align-center f-justify-between">
               <Leftbar onAddNode={this.onAddNode} />
@@ -111,6 +125,9 @@ class Home extends React.Component
                   onNodesDelete={this.onNodesDelete}
                   nodeTypes={nodeTypes}
                   isValidConnection={this.isValidConnection}
+                  proOptions={proOptions}
+                  updateNodeData={this.updateNodeData}
+                  nodesData={this.state.nodesData}
                 />
                 <Result/>
               </div>

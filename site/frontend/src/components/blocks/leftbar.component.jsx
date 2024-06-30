@@ -10,19 +10,45 @@ class Leftbar extends React.Component
         super(props);
         this.state = 
         { 
-            
+            width: 270,
+            isResizing: false
         };
+        this.leftbarRef = React.createRef();
+        this.resizerRef = React.createRef();
     }
 
-    scrollLeft = () => { this.modelBox.scrollBy({ left: -150, behavior: 'smooth' }); };
+    componentDidMount() 
+    {
+        document.addEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('mouseup', this.handleMouseUp);
+    }
 
+    componentWillUnmount() 
+    {
+        document.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mouseup', this.handleMouseUp);
+    }
+
+    handleMouseDown = (e) => { this.setState({ isResizing: true }); };
+    handleMouseUp = (e) => { this.setState({ isResizing: false }); };
+    scrollLeft = () => { this.modelBox.scrollBy({ left: -150, behavior: 'smooth' }); };
     scrollRight = () => { this.modelBox.scrollBy({ left: 150, behavior: 'smooth' }); };
-  
+
+    handleMouseMove = (e) => 
+    {
+        if (!this.state.isResizing) return;
+        let newWidth = e.clientX - this.leftbarRef.current.getBoundingClientRect().left;
+        if (newWidth < 270) { newWidth = 270; }
+        else if (newWidth > 500) { newWidth = 500; }
+        this.setState({ width: newWidth });
+    };
+
     render()
     {
         const { onAddNode } = this.props;
+        const { width } = this.state;
         return (
-            <div className="leftbar f f-column f-justify-start f-align-center">
+            <div className="leftbar f f-column f-justify-start f-align-center" style={{ width: `${width}px` }} ref={this.leftbarRef}>
 
                 <div className='leftbar-title-core f f-column f-justify-start f-align-center'>
                     <h1 className='leftbar-title'>Deep Learnia</h1>
@@ -88,7 +114,13 @@ class Leftbar extends React.Component
                 <div className='leftbar-bottom-core'>
                     
                 </div>
-                
+
+                <div 
+                    className="resizer" 
+                    onMouseDown={this.handleMouseDown}
+                    ref={this.resizerRef}
+                ></div>
+
             </div>
         )
     }

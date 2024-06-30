@@ -22,6 +22,7 @@
   height: 100%;
   font-weight: bold;
   margin-bottom: 5px;
+  border-bottom: 2px solid rgba(122, 0, 0, 1);
   background-color: rgba(81, 0, 0, 1);
   box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2);
   backdrop-filter: blur(10px);
@@ -80,6 +81,7 @@
 .node-fonction-header
 {
   background-color: rgba(0, 81, 11, 1);
+  border-bottom: 2px solid rgba(0, 122, 11, 1);
   box-shadow: 0 2px 4px rgba(0, 255, 0, 0.2);
   backdrop-filter: blur(10px);
 }
@@ -97,17 +99,17 @@
 
 .node-parameter
 {
-  border: 2px solid rgba(0, 2, 133, 1);
+  border: 2px solid rgba(0, 2, 160, 1);
   box-shadow: 0 3px 5px rgba(0, 0, 255, 0.2);
   backdrop-filter: blur(10px);
 }
 
 .node-parameter-header 
 {
-  background-color: rgba(0, 2, 133, 1);
+  border-bottom: 2px solid rgba(0, 2, 160, 1);
+  background-color: rgba(0, 2, 111, 1);
   box-shadow: 0 3px 5px rgba(0, 0, 255, 0.2);
   backdrop-filter: blur(10px);
-  border: 0;
 }
 
 .node-parameter-args
@@ -192,3 +194,5 @@
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+
+.step-value {font-size: 0.9em;}

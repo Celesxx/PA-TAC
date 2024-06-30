@@ -59,7 +59,7 @@
         "type": "parameter_slider_node"
       },
       {
-        "name": "Couche du modèle",
+        "name": "Neuronnes",
         "input": [],
         "output": ["Initialisation"],
         "type": "parameter_node"

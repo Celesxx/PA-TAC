@@ -1,5 +1,57 @@
-.interface-core
+.interface
 {
+    position: relative;
     height: 65%;
     width: 100%;
+}
+
+.interface-core
+{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 1em;
+    margin-right: 1em;
+    width: auto;
+    /* border: 2px solid white; */
+    height: 40px;
+}
+
+
+.interface-input 
+{
+    height: 30px;
+    width: 100%;
+    border: 2px solid rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 5px;
+    padding: 3px 6px 3px 6px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.interface-input:hover
+{
+    transform: scale(0.95);
+}
+
+.react-flow__panel.left
+{
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.interface-input-icon 
+{
+    
+    cursor: pointer;
+    pointer-events: none; 
+}
+
+.interface-input-text
+{
+    font-size: 14px;
+    color: black;
 }

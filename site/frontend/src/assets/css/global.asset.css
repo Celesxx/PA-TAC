@@ -11,6 +11,11 @@ html
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
 }
 html, body
 {
@@ -41,7 +46,7 @@ h1, h2, h3, h4, h5
     color: var(--text-color);
     font-weight: bold;
     text-transform: capitalize;
-    text-shadow: 1px 1px 2px var(--glow-color), -1px -1px 2px var(--glow-color);
+    /* text-shadow: 1px 1px 2px var(--glow-color), -1px -1px 2px var(--glow-color); */
 }
 
 .f { display: flex;}

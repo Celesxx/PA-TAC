@@ -3,14 +3,15 @@ import '../../assets/css/nodes/modele.asset.css';
 import { Handle, Position } from 'reactflow';
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 
-const ParameterSliderNode = ({ data }) => 
+const ParameterSliderNode = ({ id, data }) => 
 {
 
   const [sliderValue, setSliderValue] = useState(0);
   const [stepExponent, setStepExponent] = useState(-2);
   const [step, setStep] = useState(Math.pow(10, stepExponent));
 
-  useEffect(() => {
+  useEffect(() => 
+  {
     const newStep = Math.pow(10, stepExponent);
     setStep(newStep);
     const newMin = newStep;
@@ -18,22 +19,27 @@ const ParameterSliderNode = ({ data }) =>
     setSliderValue(Math.max(newMin, Math.min(newMax, sliderValue)));
   }, [stepExponent]);
 
-  const handleSliderChange = (event) => {
+  const handleSliderChange = (event) => 
+  {
     const newValue = parseFloat(event.target.value);
     setSliderValue(roundValue(newValue, step));
+    data.updateNodeData(id, {'label': data.label, 'value': roundValue(newValue, step)});
   };
 
-  const handleStepExponentChange = (event) => {
+  const handleStepExponentChange = (event) => 
+  {
     const newStepExponent = parseInt(event.target.value, 10);
     setStepExponent(newStepExponent);
   };
 
-  const roundValue = (value, step) => {
+  const roundValue = (value, step) => 
+  {
     const precision = Math.min(Math.max(Math.log10(1 / step), 0), 100);
     return parseFloat(value.toFixed(precision));
   };
 
-  const calculateMinMax = (step) => {
+  const calculateMinMax = (step) => 
+  {
     const newMin = step;
     const newMax = step * 9;
     return { min: newMin, max: newMax };
