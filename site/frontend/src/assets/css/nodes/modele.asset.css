@@ -8,14 +8,14 @@
   box-shadow: 0 3px 5px rgba(255, 0, 0, 0.2);
   backdrop-filter: blur(10px);
 }
-.modele-node, .fonction-node, .parameter-node
+.modele-node, .fonction-node, .parameter-node, .dataset-node
 {
     border-radius: 5px;
     background-color: rgba(14, 17, 23, 1);
     color: white;
 }
 
-.node-modele-header, .node-fonction-header, .node-parameter-header
+.node-modele-header, .node-fonction-header, .node-parameter-header, .node-dataset-header
 {
   padding: 10px !important;
   margin: 0 !important;
@@ -30,7 +30,7 @@
 
 
 
-.node-modele-args, .node-fonction-args, .node-parameter-args
+.node-modele-args, .node-fonction-args, .node-parameter-args, .node-dataset-args
 {
   border-top: 0px;
   gap: 3em;
@@ -38,25 +38,25 @@
 } 
 
 
-.node-modele-args-container, .node-fonction-args-container, .node-parameter-args-container
+.node-modele-args-container, .node-fonction-args-container, .node-parameter-args-container, .node-dataset-args-container
 {
   padding: 15px 5px 15px 5px;
   font-size: 0.9em;
   gap: 1em;
 }
 
-.node-modele-input, .node-modele-output, .node-fonction-input, .node-fonction-output, .node-parameter-input, .node-parameter-output
+.node-modele-input, .node-modele-output, .node-fonction-input, .node-fonction-output, .node-parameter-input, .node-parameter-output, .node-dataset-input, .node-dataset-output
 {
   position: relative;
   gap: 1em;
 }
 
-.node-modele-output, .node-fonction-output, .node-parameter-output
+.node-modele-output, .node-fonction-output, .node-parameter-output, .node-dataset-output
 {
   flex-direction: row-reverse;
 }
 
-.node-modele-handle, .node-fonction-handle, .node-parameter-handle 
+.node-modele-handle, .node-fonction-handle, .node-parameter-handle, .node-dataset-handle
 {
   position: relative;
   right: inherit;
@@ -196,3 +196,27 @@
 }
 
 .step-value {font-size: 0.9em;}
+
+
+
+/*----------------------- Dataset Node -----------------------*/
+
+.node-dataset
+{
+  border: 2px solid rgb(144, 0, 228);
+  box-shadow: 0 3px 5px rgba(162, 0, 255, 0.2);
+  backdrop-filter: blur(10px);
+
+}
+.node-dataset-header
+{
+  border-bottom: 2px solid rgb(144, 0, 228);
+  background-color: rgb(66, 0, 105);
+  box-shadow: 0 2px 4px rgba(162, 0, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.node-dataset-args 
+{
+  border-top: 0px;
+}

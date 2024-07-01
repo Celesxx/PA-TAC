@@ -9,9 +9,11 @@ import ModeleNode from '../nodes/modele.node.jsx';
 import ParameterNode from '../nodes/parameter.node.jsx';
 import ParameterBoolNode from '../nodes/parameterBool.node.jsx';
 import ParameterSliderNode from '../nodes/parameterSlider.node.jsx';
+import ParameterSliderNeuronnesNode from '../nodes/parameterSliderNeuronnes.node.jsx';
 import ParameterSliderBoolNode from '../nodes/parameterSliderBool.node.jsx';
 import ParameterTextNode from '../nodes/parameterText.node.jsx';
 import FonctionNode from '../nodes/fonction.node.jsx';
+import DatasetNode from '../nodes/dataset.node.jsx';
 
 const nodeTypes = 
 {
@@ -20,8 +22,10 @@ const nodeTypes =
   parameter_node: ParameterNode,
   parameter_bool_node: ParameterBoolNode,
   parameter_slider_node: ParameterSliderNode,
+  parameter_slider_neuronnes_node: ParameterSliderNeuronnesNode,
   parameter_text_node: ParameterTextNode,
   parameter_slider_bool_node: ParameterSliderBoolNode,
+  dataset_node: DatasetNode,
 };
 
 class Home extends React.Component 
@@ -72,7 +76,7 @@ class Home extends React.Component
     return connection.sourceHandle === targetNode.data.label;
   };
   
-  onAddNode = (name, input, output, type) => 
+  onAddNode = (name, label, input, output, type) => 
   {
       const { nodes, nodeIndex } = this.state;
       const position = { x: 200, y: nodeIndex * 75 };
@@ -80,7 +84,7 @@ class Home extends React.Component
       {
         id: this.getId(),
         position,
-        data: { label: `${name}`, input: input, output: output, isConnectable: true},
+        data: { label: `${name}`, name: `${label}`, input: input, output: output, isConnectable: true},
         className: 'modele-node',
       };
 

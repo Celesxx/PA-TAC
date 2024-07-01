@@ -87,6 +87,14 @@
     backdrop-filter: blur(10px);
 }
 
+.leftbar-dataset-box::-webkit-scrollbar-thumb 
+{
+    border: 1px solid rgb(144, 0, 228) !important;
+    background-color: rgb(66, 0, 105) !important;
+    box-shadow: 0 4px 6px rgba(162, 0, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
 .leftbar-modele-box::-webkit-scrollbar-track 
 {
     border-radius: 50px;
@@ -110,7 +118,14 @@
     backdrop-filter: blur(10px);
 }
 
-.modele-box, .methode-box, .parametre-box 
+.leftbar-dataset-box::-webkit-scrollbar-track 
+{
+    border: 1px solid rgb(144, 0, 228) !important;
+    box-shadow: 0 4px 6px rgba(162, 0, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.modele-box, .methode-box, .parametre-box, .dataset-box
 {
     padding: 10px;
     border-radius: 4px;
@@ -158,4 +173,17 @@
 {
     border: 1px solid rgba(0, 2, 181, 1);
     background-color: rgba(0, 2, 140, 1);
+}
+.dataset-box 
+{
+    border: 1px solid rgb(144, 0, 228);
+    background-color: rgb(66, 0, 105);
+    box-shadow: 0 4px 6px rgba(162, 0, 255, 0.2);
+    backdrop-filter: blur(10px);
+} 
+
+.dataset-box:hover
+{
+    border: 1px solid rgb(144, 0, 228);
+    background-color: rgb(100, 0, 158);
 }

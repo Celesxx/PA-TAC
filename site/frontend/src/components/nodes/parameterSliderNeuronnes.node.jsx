@@ -91,8 +91,8 @@ const ParameterSliderNode = ({ id, data }) =>
         <input 
           type="range" 
           id="step-slider"
-          min={-10} 
-          max={10}
+          min={0} 
+          max={5}
           step={1}
           value={stepExponent} 
           onChange={handleStepExponentChange}

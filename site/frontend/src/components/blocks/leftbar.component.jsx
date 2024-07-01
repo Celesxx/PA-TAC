@@ -64,7 +64,7 @@ class Leftbar extends React.Component
                                 <div 
                                     key={index} 
                                     className="modele-box" 
-                                    onClick={() => onAddNode(modele.name, modele.input, modele.output, modele.type)}
+                                    onClick={() => onAddNode(modele.name, "", modele.input, modele.output, modele.type)}
                                 >
                                     {modele.name}
                                 </div>
@@ -79,7 +79,7 @@ class Leftbar extends React.Component
                                 <div 
                                     key={index} 
                                     className="methode-box" 
-                                    onClick={() => onAddNode(modele.name, modele.input, modele.output, modele.type)}
+                                    onClick={() => onAddNode(modele.name, "", modele.input, modele.output, modele.type)}
                                 >
                                     {modele.name}
                                 </div>
@@ -94,7 +94,7 @@ class Leftbar extends React.Component
                                 <div 
                                     key={index} 
                                     className="parametre-box" 
-                                    onClick={() => onAddNode(modele.name, modele.input, modele.output, modele.type)}
+                                    onClick={() => onAddNode(modele.name, "",  modele.input, modele.output, modele.type)}
                                 >
                                     {modele.name}
                                 </div>
@@ -104,8 +104,16 @@ class Leftbar extends React.Component
 
                     <div className='leftbar-data-core f f-column f-justify-center f-align-start'>
                         <h2 className='leftbar-modele-title'>Liste des datasets</h2>
-                        <div className='leftbar-data-box'>
-                            
+                        <div className='leftbar-modele-box leftbar-dataset-box' ref={ref => this.modelBox = ref}>
+                            {dataModele["dataset"].map((modele, index) => (
+                                <div 
+                                    key={index} 
+                                    className="dataset-box" 
+                                    onClick={() => onAddNode(modele.name, modele.label,  modele.input, modele.output, modele.type)}
+                                >
+                                    {modele.label}
+                                </div>
+                            ))}
                         </div>
                     </div>
 

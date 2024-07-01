@@ -1,19 +1,28 @@
 import React, { useState, useEffect  } from 'react';
 import '../../assets/css/nodes/modele.asset.css'; 
 import { Handle, Position } from 'reactflow';
-import { MathJax, MathJaxContext } from "better-react-mathjax";
 
-const ParameterSliderBoolNode = ({ data }) => 
+const ParameterSliderBoolNode = ({ id, data }) => 
 {
 
   const [sliderValue, setSliderValue] = useState(0);
-  const [stepExponent, setStepExponent] = useState(-2);
+  const [stepExponent, setStepExponent] = useState(0);
   const [step, setStep] = useState(Math.pow(10, stepExponent));
   const [parameterValue, setParameterValue] = useState(true);
   
-  const toggleParameter = () => { setParameterValue(prevValue => !prevValue); };
+  const toggleParameter = () => 
+  { 
 
-  useEffect(() => {
+    setParameterValue(prevValue => 
+    {
+      const newValue = !prevValue;
+      data.updateNodeData(id, { 'label': data.label, 'value': sliderValue, 'enable': newValue });
+      return newValue;
+    });
+  };
+
+  useEffect(() => 
+  {
     const newStep = Math.pow(10, stepExponent);
     setStep(newStep);
     const newMin = newStep;
@@ -21,22 +30,33 @@ const ParameterSliderBoolNode = ({ data }) =>
     setSliderValue(Math.max(newMin, Math.min(newMax, sliderValue)));
   }, [stepExponent]);
 
-  const handleSliderChange = (event) => {
+  useEffect(() => 
+  {
+    data.updateNodeData(id, { 'label': data.label, 'value': sliderValue, 'enable': parameterValue });
+  }, []);
+
+  const handleSliderChange = (event) => 
+  {
     const newValue = parseFloat(event.target.value);
     setSliderValue(roundValue(newValue, step));
+    data.updateNodeData(id, {'label': data.label, 'value': roundValue(newValue, step), 'enable': parameterValue});
   };
 
-  const handleStepExponentChange = (event) => {
+  const handleStepExponentChange = (event) => 
+  {
     const newStepExponent = parseInt(event.target.value, 10);
     setStepExponent(newStepExponent);
   };
 
-  const roundValue = (value, step) => {
+
+  const roundValue = (value, step) => 
+  {
     const precision = Math.min(Math.max(Math.log10(1 / step), 0), 100);
     return parseFloat(value.toFixed(precision));
   };
 
-  const calculateMinMax = (step) => {
+  const calculateMinMax = (step) => 
+  {
     const newMin = step;
     const newMax = step * 9;
     return { min: newMin, max: newMax };
@@ -84,7 +104,7 @@ const ParameterSliderBoolNode = ({ data }) =>
         />
       </div>
       <div className="node-step-slider f f-column f-align-center f-justify-center">
-        <div className="step-value">Step: <MathJaxContext><MathJax dynamic inline>{"\\(10^{" + stepExponent + "}\\)"}</MathJax></MathJaxContext></div>
+        <div className="step-value">Step: 10^ + {stepExponent}</div>
         <input 
           type="range" 
           id="step-slider"

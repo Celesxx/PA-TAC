@@ -20,7 +20,6 @@ class Interface extends React.Component
 
         while (stack.length > 0) 
         {
-            console.log("test")
             const nodeId = stack.pop();
             if (!visitedNodes.has(nodeId)) 
             {
@@ -40,7 +39,6 @@ class Interface extends React.Component
                     const connectedEdges = edges.filter(edge => edge.source === nodeId || edge.target === nodeId);
                     connectedEdges.forEach(edge => 
                     {
-                        console.log("test1")
                         if (edge.source === nodeId && !visitedNodes.has(edge.target)) 
                         {
                             stack.push(edge.target);
@@ -61,25 +59,54 @@ class Interface extends React.Component
     {
         const modelNode = connectedNodes.find(node => node.type === 'modele_node');
         const functions = connectedNodes.filter(node => node.type === 'fonction_node');
-        const parameters = connectedNodes.filter(node => node.type === 'parameter_node' || node.type === 'parameter_slider_node' || node.type === 'parameter_slider_bool_node');
-
-        const structure = {
+        const parameters = connectedNodes.filter(node => node.type === 'parameter_node' || node.type === 'parameter_slider_node' || node.type === 'parameter_slider_bool_node' || node.type === 'parameter_slider_neuronnes_node' || node.type === 'parameter_text_node' || node.type === 'parameter_bool_node');
+    
+        const getNodeData = (nodeId) => 
+        {
+            const node = connectedNodes.find(node => node.id === nodeId);
+            return node ? node.data : null;
+        };
+    
+        const getConnectedNodesData = (nodeId) => 
+        {
+            const connectedEdges = this.props.edges.filter(edge => edge.source === nodeId || edge.target === nodeId);
+            const connectedNodeIds = connectedEdges.map(edge => edge.source === nodeId ? edge.target : edge.source);
+            return connectedNodeIds.map(id => getNodeData(id)).filter(data => data);
+        };
+    
+        const structure = 
+        {
             modele: modelNode.data.label,
-            fonctions: functions.map(func => ({
+            fonctions: functions.map(func => (
+            {
                 label: func.data.label,
                 isConnected: true,
                 isCompleted: this.checkIfCompleted(func),
-                parametres: parameters.filter(param => this.isConnected(func.id, param.id)).map(param => ({
-                    label: param.data.label,
-                    isConnected: true,
-                    isCompleted: this.checkIfCompleted(param),
-                    data: param.data
-                }))
+                parametres: parameters.filter(param => this.isConnected(func.id, param.id)).map(param => 
+                {
+                    let paramData = param.data;
+                    if (param.data.label === 'Neuronnes') 
+                    {
+                        const connectedData = getConnectedNodesData(param.id).filter(data => data.label !== 'Initialisation');
+                        paramData = connectedData.map(data => (
+                        {
+                            label: data.label,
+                            value: data.value || 0
+                        }));
+                    }
+                    return {
+                        label: param.data.label,
+                        isConnected: true,
+                        isCompleted: this.checkIfCompleted(param),
+                        data: paramData
+                    };
+                })
             }))
         };
-
+    
         return structure;
     }
+        
 
     isConnected = (sourceId, targetId) => 
     {
@@ -121,7 +148,7 @@ class Interface extends React.Component
 
     render()
     {
-        const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodesDelete, nodeTypes, isValidConnection, proOptions, updateNodeData, nodesData } = this.props;
+        const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodesDelete, nodeTypes, isValidConnection, proOptions, updateNodeData } = this.props;
         
         
         return (
@@ -132,7 +159,7 @@ class Interface extends React.Component
                             ...node.data,
                             updateNodeData: updateNodeData
                         }
-                    }))} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onNodesDelete={onNodesDelete} nodeTypes={nodeTypes} isValidConnection={isValidConnection} proOptions={proOptions}>
+                    }))} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onNodesDelete={onNodesDelete} nodeTypes={nodeTypes} isValidConnection={isValidConnection} proOptions={proOptions} minZoom={0.2}>
                     <Background />
                     <Controls />
                 </ReactFlow>

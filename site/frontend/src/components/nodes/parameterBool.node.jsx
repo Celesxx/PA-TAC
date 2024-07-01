@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../assets/css/nodes/modele.asset.css'; 
 import { Handle, Position } from 'reactflow';
 
-const ParameterBoolNode = ({ data }) => 
+const ParameterBoolNode = ({ id, data }) => 
 {
 
   const [parameterValue, setParameterValue] = useState(true);
-  const toggleParameter = () => { setParameterValue(prevValue => !prevValue); };
+
+  useEffect(() => 
+  {
+    data.updateNodeData(id, { 'label': data.label, 'enable': parameterValue });
+  }, []);
+
+  const toggleParameter = () => 
+  { 
+
+    setParameterValue(prevValue => 
+    {
+      const newValue = !prevValue;
+      data.updateNodeData(id, { 'label': data.label, 'enable': newValue });
+      return newValue;
+    });
+  };
 
   return (
     <div className="node-parameter">
