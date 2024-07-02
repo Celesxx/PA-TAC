@@ -80,25 +80,27 @@ class Interface extends React.Component
             fonctions: functions.map(func => (
             {
                 label: func.data.label,
-                isConnected: true,
-                isCompleted: this.checkIfCompleted(func),
-                parametres: parameters.filter(param => this.isConnected(func.id, param.id)).map(param => 
+                parametres: parameters.filter(param => 
+                    this.props.edges.some(edge => 
+                        (edge.source === func.id && edge.target === param.id) || 
+                        (edge.target === func.id && edge.source === param.id)
+                    )
+                ).map(param => 
                 {
-                    let paramData = param.data;
                     if (param.data.label === 'Neuronnes') 
                     {
                         const connectedData = getConnectedNodesData(param.id).filter(data => data.label !== 'Initialisation');
-                        paramData = connectedData.map(data => (
-                        {
-                            label: data.label,
-                            value: data.value || 0
-                        }));
+                        const neuronnesData = connectedData.map(data => ( data.value || 0 ));
+
+                        return {
+                            label: 'Neuronnes',
+                            value: neuronnesData
+                        };
                     }
+                    
                     return {
                         label: param.data.label,
-                        isConnected: true,
-                        isCompleted: this.checkIfCompleted(param),
-                        data: paramData
+                        value: param.data.value || 0
                     };
                 })
             }))
