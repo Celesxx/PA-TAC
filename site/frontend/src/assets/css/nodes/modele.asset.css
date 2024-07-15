@@ -197,8 +197,26 @@
 
 .step-value {font-size: 0.9em;}
 
+.node-neuronnes
+{
+  gap: 2em;
+}
 
+.node-parameter-order
+{
+  font-size: 12px;
+  border: 2px solid rgba(0, 2, 160, 1);
+  box-shadow: 0 3px 5px rgba(0, 2, 160, 0.2);
+  backdrop-filter: blur(10px);
+  background: rgba(0, 2, 160, 1);
+  color: white;
+  transition: transform 0.3s ease;
+}
 
+.node-parameter-order:hover
+{
+  transform: scale(0.95);
+}
 /*----------------------- Dataset Node -----------------------*/
 
 .node-dataset

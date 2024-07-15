@@ -54,9 +54,9 @@ class Home extends React.Component
           const existingNodeDataIndex = prevState.nodesData.findIndex(node => node.node === nodeId);
           if (existingNodeDataIndex >= 0) 
           {
-              const updatedNodesData = [...prevState.nodesData];
-              updatedNodesData[existingNodeDataIndex].data = { ...updatedNodesData[existingNodeDataIndex].data, ...values };
-              return { nodesData: updatedNodesData };
+            const updatedNodesData = [...prevState.nodesData];
+            updatedNodesData[existingNodeDataIndex].data = { ...updatedNodesData[existingNodeDataIndex].data, ...values };
+            return { nodesData: updatedNodesData };
           } 
           else 
           {
@@ -106,6 +106,33 @@ class Home extends React.Component
     }));
   };
   
+  updateAllNodeOrders = (nodeId, newOrder) => 
+  {
+    const node = this.state.nodesData.find(node => node.node === nodeId);
+    let currentOrder = node.data.order || 0;
+    if (currentOrder === newOrder) 
+    {
+      currentOrder = (currentOrder + 1) % (this.state.nodesData.filter(node => node.data.label === "Couche Cachée").length + 1) != 0 ? currentOrder + 1 : 1;
+      this.setState((prevState) => 
+      {
+        const maxOrder = prevState.nodesData.filter(node => node.data.label === "Couche Cachée").length;
+        const updatedNodesData = prevState.nodesData.map(nodeData => 
+        {
+          if (nodeData.data.label !== "Couche Cachée") { return nodeData; }
+          if (nodeData.node === node.node) 
+          {
+            return { ...nodeData, data: { ...nodeData.data, order: currentOrder } };
+          } else
+          {
+            return { ...nodeData, data: { ...nodeData.data, order: (nodeData.data.order + 1) % (maxOrder + 1) != 0 ? nodeData.data.order + 1 : 1} };
+          }
+        });
+        return { nodesData: updatedNodesData };
+      });
+    }
+  };
+  
+
   
   getId = () =>
   {
@@ -132,6 +159,7 @@ class Home extends React.Component
                   proOptions={proOptions}
                   updateNodeData={this.updateNodeData}
                   nodesData={this.state.nodesData}
+                  updateAllNodeOrders={this.updateAllNodeOrders}
                 />
                 <Result/>
               </div>

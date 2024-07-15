@@ -6,35 +6,36 @@ const ParameterSliderNode = ({ id, data }) =>
 {
 
   const [sliderValue, setSliderValue] = useState(0);
-  const [stepExponent, setStepExponent] = useState(-2);
-  const [step, setStep] = useState(Math.pow(10, stepExponent));
+  const [order, setOrder] = useState(data.nodeLength || 0);
 
   useEffect(() => 
   {
-    const newStep = Math.pow(10, stepExponent);
-    setStep(newStep);
-    const newMin = newStep;
-    const newMax = newStep * 9;
-    setSliderValue(Math.max(newMin, Math.min(newMax, sliderValue)));
-  }, [stepExponent]);
-
-  useEffect(() => 
-  {
-    data.updateNodeData(id, { 'label': data.label, 'value': sliderValue });
+    data.updateNodeData(id, { 'label': data.label, 'value': sliderValue, "order" : data.nodeLength });
   }, []);
+
+  useEffect(() => 
+  {
+    let filteredNodesData = data.nodesData.find(nodeData => nodeData.node === id);
+    if (filteredNodesData) { setOrder(filteredNodesData.data.order); }
+  }, [data.nodesData, id]);
+  
+  const handleOrderChange = () => 
+  {
+    data.updateAllNodeOrders(id, order);
+    let filteredNodesData = data.nodesData.find(nodeData => nodeData.node === id)
+    if (filteredNodesData) 
+    {
+      setOrder(filteredNodesData.data.order);
+    }
+  };
 
   const handleSliderChange = (event) => 
   {
     const newValue = parseFloat(event.target.value);
-    setSliderValue(roundValue(newValue, step));
-    data.updateNodeData(id, {'label': data.label, 'value': roundValue(newValue, step)});
+    setSliderValue(roundValue(newValue, 1));
+    data.updateNodeData(id, {'label': data.label, 'value': roundValue(newValue, 1)});
   };
 
-  const handleStepExponentChange = (event) => 
-  {
-    const newStepExponent = parseInt(event.target.value, 10);
-    setStepExponent(newStepExponent);
-  };
 
   const roundValue = (value, step) => 
   {
@@ -42,19 +43,17 @@ const ParameterSliderNode = ({ id, data }) =>
     return parseFloat(value.toFixed(precision));
   };
 
-  const calculateMinMax = (step) => 
-  {
-    const newMin = step;
-    const newMax = step * 9;
-    return { min: newMin, max: newMax };
-  };
-
-  const { min, max } = calculateMinMax(step);
-
   return (
     <div className="node-parameter">
-      <div className="node-parameter-header">
+      <div className="node-parameter-header node-neuronnes f f-rows f-justify-between">
         {data.label}
+        {
+          data.label == "Couche Cachée" &&
+          (
+            <button className="node-parameter-order" onClick={handleOrderChange}>Order: {order}</button>
+          )
+        }
+        {/* <button className="node-parameter-order" onClick={handleOrderChange}>Order: {order}</button> */}
       </div>
       <div className="node-parameter-args f f-row f-align-end f-justify-between f-content-center">
         <div className="node-parameter-args-container f f-column f-align-start f-justify-between f-content-center">
@@ -75,27 +74,14 @@ const ParameterSliderNode = ({ id, data }) =>
         </div>
       </div>
       <div className="node-parameter-slider f f-column f-align-center f-justify-center">
-        <div className="slider-value">Value: {roundValue(sliderValue, step)}</div>
+        <div className="slider-value">Value: {roundValue(sliderValue, 1)}</div>
         <input 
           type="range" 
-          min={min} 
-          max={max}
-          step={step}
+          min={0} 
+          max={1000}
+          step={1}
           value={sliderValue} 
           onChange={handleSliderChange}
-          className="slider nodrag"
-        />
-      </div>
-      <div className="node-step-slider f f-column f-align-center f-justify-center">
-        <div className="step-value">Step: 10^{stepExponent}</div>
-        <input 
-          type="range" 
-          id="step-slider"
-          min={0} 
-          max={5}
-          step={1}
-          value={stepExponent} 
-          onChange={handleStepExponentChange}
           className="slider nodrag"
         />
       </div>

@@ -89,8 +89,20 @@ class Interface extends React.Component
                 {
                     if (param.data.label === 'Neuronnes') 
                     {
-                        const connectedData = getConnectedNodesData(param.id).filter(data => data.label !== 'Initialisation');
-                        const neuronnesData = connectedData.map(data => ( data.value || 0 ));
+                        // const connectedData = getConnectedNodesData(param.id).filter(data => data.label !== 'Initialisation');
+                        // const neuronnesData = connectedData.map(data => ( data.value || 0 ));
+
+                        const connectedData = getConnectedNodesData(param.id)
+                        .filter(data => data.label !== 'Initialisation')
+                        .sort((a, b) => a.order - b.order);
+                    
+                        const coucheSortie = connectedData.find(data => data.label === 'Couche de sortie');
+                        const neuronnesData = connectedData.filter(data => data.label !== 'Couche de sortie').map(data => data.value || 0);
+
+                        if (coucheSortie) 
+                        {
+                            neuronnesData.push(coucheSortie.value || 0);
+                        }
 
                         return {
                             label: 'Neuronnes',
@@ -150,7 +162,7 @@ class Interface extends React.Component
 
     render()
     {
-        const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodesDelete, nodeTypes, isValidConnection, proOptions, updateNodeData } = this.props;
+        const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodesDelete, nodeTypes, isValidConnection, proOptions, updateNodeData, updateAllNodeOrders, nodesData } = this.props;
         
         
         return (
@@ -159,7 +171,10 @@ class Interface extends React.Component
                         ...node,
                         data: {
                             ...node.data,
-                            updateNodeData: updateNodeData
+                            nodeLength: nodesData.filter(node => node.data.label == "Couche Cachée").length + 1,
+                            updateNodeData: updateNodeData,
+                            updateAllNodeOrders: updateAllNodeOrders, 
+                            nodesData: nodesData,
                         }
                     }))} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onNodesDelete={onNodesDelete} nodeTypes={nodeTypes} isValidConnection={isValidConnection} proOptions={proOptions} minZoom={0.2}>
                     <Background />

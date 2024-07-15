@@ -261,7 +261,6 @@ impl MlpModel
             
             let avg_loss = epoch_loss / x.len() as f64;
 
-           
             if let Some(writer) = writer.as_mut() 
             {
                 writer.add_scalar("loss", avg_loss as f32, epoch);
