@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../assets/css/nodes/modele.asset.css'; 
 import { Handle, Position } from 'reactflow';
 

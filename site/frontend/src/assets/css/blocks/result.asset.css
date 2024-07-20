@@ -15,5 +15,59 @@
     cursor: ns-resize;
     top: 0;
     left: 0;
-    /* background-color: rgba(81, 0, 0, 0.5);  */
+}
+
+.result-content 
+{
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    gap: 1em;
+}
+
+.result-item 
+{
+    gap: 1em;
+    width: 100%;
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.result-timestamp 
+{
+    font-size: 0.8em;
+    color: #888;
+}
+
+.result-message 
+{
+    font-size: 1em;
+    color: #333;
+}
+
+.result-content::-webkit-scrollbar 
+{
+    width: 8px;
+    background-color: transparent;
+}
+
+.result-content::-webkit-scrollbar-thumb 
+{
+    cursor: pointer;
+    border-radius: 50px;
+    background-color: rgb(136, 136, 136) !important;
+    border: 1px solid rgb(180, 180, 180) !important;
+    box-shadow: 0 4px 6px rgb(180, 180, 180, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.result-content::-webkit-scrollbar-track 
+{
+    border-radius: 50px;
+    background-color: transparent;
+    border: 1px solid rgb(136, 136, 136) !important;
+    box-shadow: 0 4px 6px rgb(180, 180, 180, 0.2);
+    backdrop-filter: blur(10px);
 }

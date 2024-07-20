@@ -39,6 +39,7 @@ class Home extends React.Component
       nodes: [],
       nodesData : [],
       edges: [],
+      result: [],
       nodeIndex: 1
     };
   }
@@ -76,7 +77,7 @@ class Home extends React.Component
     return connection.sourceHandle === targetNode.data.label;
   };
   
-  onAddNode = (name, label, input, output, type) => 
+  onAddNode = (name, label, input, output, type, value) => 
   {
       const { nodes, nodeIndex } = this.state;
       const position = { x: 200, y: nodeIndex * 75 };
@@ -84,7 +85,7 @@ class Home extends React.Component
       {
         id: this.getId(),
         position,
-        data: { label: `${name}`, name: `${label}`, input: input, output: output, isConnectable: true},
+        data: { label: `${name}`, name: `${label}`, input: input, output: output, isConnectable: true, value: value},
         className: 'modele-node',
       };
 
@@ -132,6 +133,11 @@ class Home extends React.Component
     }
   };
   
+  updateResult = (result) => 
+  {
+    const timestamp = new Date().toLocaleString();
+    this.setState({ result: [...this.state.result, { ...result, timestamp }] });
+  };
 
   
   getId = () =>
@@ -149,7 +155,7 @@ class Home extends React.Component
               <div className='home-core f f-column f-align-center f-justify-around'>
                 <Interface 
                   nodes={this.state.nodes} 
-                  edges={this.state.edges} 
+                  edges={this.state.edges}
                   onNodesChange={this.onNodesChange} 
                   onEdgesChange={this.onEdgesChange} 
                   onConnect={this.onConnect} 
@@ -160,8 +166,9 @@ class Home extends React.Component
                   updateNodeData={this.updateNodeData}
                   nodesData={this.state.nodesData}
                   updateAllNodeOrders={this.updateAllNodeOrders}
+                  updateResult={this.updateResult}
                 />
-                <Result/>
+                <Result result={this.state.result}/>
               </div>
           </div>
       )

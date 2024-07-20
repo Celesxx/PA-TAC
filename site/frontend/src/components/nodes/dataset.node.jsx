@@ -1,9 +1,14 @@
-import React from 'react';
-import '../../assets/css/nodes/modele.asset.css'; 
+import React, { useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 
-const ParameterNode = ({ data }) => 
+const ParameterNode = ({ id, data }) => 
 {
+
+  useEffect(() => 
+    {
+      data.updateNodeData(id, { 'label': data.label, name : data.name, 'value': data.value });
+    }, []);
+  
   return (
     <div className="node-dataset">
       <div className="node-dataset-header">

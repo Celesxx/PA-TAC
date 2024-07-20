@@ -64,7 +64,7 @@ class Leftbar extends React.Component
                                 <div 
                                     key={index} 
                                     className="modele-box" 
-                                    onClick={() => onAddNode(modele.name, "", modele.input, modele.output, modele.type)}
+                                    onClick={() => onAddNode(modele.name, "", modele.input, modele.output, modele.type, modele.value == null ? {} : modele.value)}
                                 >
                                     {modele.name}
                                 </div>
@@ -79,7 +79,7 @@ class Leftbar extends React.Component
                                 <div 
                                     key={index} 
                                     className="methode-box" 
-                                    onClick={() => onAddNode(modele.name, "", modele.input, modele.output, modele.type)}
+                                    onClick={() => onAddNode(modele.name, "", modele.input, modele.output, modele.type, modele.value == null ? {} : modele.value)}
                                 >
                                     {modele.name}
                                 </div>
@@ -94,7 +94,7 @@ class Leftbar extends React.Component
                                 <div 
                                     key={index} 
                                     className="parametre-box" 
-                                    onClick={() => onAddNode(modele.name, "",  modele.input, modele.output, modele.type)}
+                                    onClick={() => onAddNode(modele.name, "",  modele.input, modele.output, modele.type, modele.value == null ? {} : modele.value)}
                                 >
                                     {modele.name}
                                 </div>
@@ -109,7 +109,7 @@ class Leftbar extends React.Component
                                 <div 
                                     key={index} 
                                     className="dataset-box" 
-                                    onClick={() => onAddNode(modele.name, modele.label,  modele.input, modele.output, modele.type)}
+                                    onClick={() => onAddNode(modele.name, modele.label,  modele.input, modele.output, modele.type, modele.value == null ? {} : modele.value)}
                                 >
                                     {modele.label}
                                 </div>

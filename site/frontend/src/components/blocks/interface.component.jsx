@@ -2,7 +2,8 @@ import React from 'react';
 import ReactFlow, { Controls, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
 import "../../assets/css/blocks/interface.asset.css"
-
+import InterfaceHelpers from '../../helpers/interface.helper.js';
+import ModeleRequest from '../../request/modele.request.js';
 class Interface extends React.Component 
 {
     constructor(props) 
@@ -11,154 +12,39 @@ class Interface extends React.Component
         this.state = { };
     }
 
-    getConnectedNodes = (startNodeId) => 
+
+    handleButtonClick = async () => 
     {
-        const { nodes, edges, nodesData } = this.props;
-        const visitedNodes = new Set();
-        const stack = [startNodeId];
-        const connectedNodes = [];
-
-        while (stack.length > 0) 
-        {
-            const nodeId = stack.pop();
-            if (!visitedNodes.has(nodeId)) 
-            {
-                visitedNodes.add(nodeId);
-                const currentNode = nodes.find(node => node.id === nodeId);
-                if (currentNode) 
-                {
-                    const nodeData = nodesData.find(data => data.node === nodeId);
-                    if (nodeData) 
-                    {
-                        connectedNodes.push({ ...currentNode, data: nodeData.data });
-                    }
-                    else 
-                    {
-                        connectedNodes.push(currentNode);
-                    }
-                    const connectedEdges = edges.filter(edge => edge.source === nodeId || edge.target === nodeId);
-                    connectedEdges.forEach(edge => 
-                    {
-                        if (edge.source === nodeId && !visitedNodes.has(edge.target)) 
-                        {
-                            stack.push(edge.target);
-                        }
-                        else if (edge.target === nodeId && !visitedNodes.has(edge.source)) 
-                        {
-                            stack.push(edge.source);
-                        }
-                    });
-                }
-            }
-        }
-        return connectedNodes;
-    }
-    
-
-    generateStructure = (connectedNodes) => 
-    {
-        const modelNode = connectedNodes.find(node => node.type === 'modele_node');
-        const functions = connectedNodes.filter(node => node.type === 'fonction_node');
-        const parameters = connectedNodes.filter(node => node.type === 'parameter_node' || node.type === 'parameter_slider_node' || node.type === 'parameter_slider_bool_node' || node.type === 'parameter_slider_neuronnes_node' || node.type === 'parameter_text_node' || node.type === 'parameter_bool_node');
-    
-        const getNodeData = (nodeId) => 
-        {
-            const node = connectedNodes.find(node => node.id === nodeId);
-            return node ? node.data : null;
-        };
-    
-        const getConnectedNodesData = (nodeId) => 
-        {
-            const connectedEdges = this.props.edges.filter(edge => edge.source === nodeId || edge.target === nodeId);
-            const connectedNodeIds = connectedEdges.map(edge => edge.source === nodeId ? edge.target : edge.source);
-            return connectedNodeIds.map(id => getNodeData(id)).filter(data => data);
-        };
-    
-        const structure = 
-        {
-            modele: modelNode.data.label,
-            fonctions: functions.map(func => (
-            {
-                label: func.data.label,
-                parametres: parameters.filter(param => 
-                    this.props.edges.some(edge => 
-                        (edge.source === func.id && edge.target === param.id) || 
-                        (edge.target === func.id && edge.source === param.id)
-                    )
-                ).map(param => 
-                {
-                    if (param.data.label === 'Neuronnes') 
-                    {
-                        // const connectedData = getConnectedNodesData(param.id).filter(data => data.label !== 'Initialisation');
-                        // const neuronnesData = connectedData.map(data => ( data.value || 0 ));
-
-                        const connectedData = getConnectedNodesData(param.id)
-                        .filter(data => data.label !== 'Initialisation')
-                        .sort((a, b) => a.order - b.order);
-                    
-                        const coucheSortie = connectedData.find(data => data.label === 'Couche de sortie');
-                        const neuronnesData = connectedData.filter(data => data.label !== 'Couche de sortie').map(data => data.value || 0);
-
-                        if (coucheSortie) 
-                        {
-                            neuronnesData.push(coucheSortie.value || 0);
-                        }
-
-                        return {
-                            label: 'Neuronnes',
-                            value: neuronnesData
-                        };
-                    }
-                    
-                    return {
-                        label: param.data.label,
-                        value: param.data.value || 0
-                    };
-                })
-            }))
-        };
-    
-        return structure;
-    }
-        
-
-    isConnected = (sourceId, targetId) => 
-    {
-        const { edges } = this.props;
-        return edges.some(edge => (edge.source === sourceId && edge.target === targetId) || (edge.source === targetId && edge.target === sourceId));
-    }
-
-    checkIfCompleted = (node) => 
-    {
-        const { edges } = this.props;
-        const targetHandles = node.data.input || [];
-        const sourceHandles = node.data.output || [];
-
-        const allTargetHandlesConnected = targetHandles.every(handle => 
-            edges.some(edge => edge.targetHandle === handle && edge.target === node.id)
-        );
-
-        const allSourceHandlesConnected = sourceHandles.every(handle => 
-            edges.some(edge => edge.sourceHandle === handle && edge.source === node.id)
-        );
-
-        return allTargetHandlesConnected && allSourceHandlesConnected;
-    }
-
-    handleButtonClick = () => 
-    {
-        const { nodes } = this.props;
+        const { nodes, edges, nodesData, updateResult } = this.props;
         const modelNode = nodes.find(node => node.type === 'modele_node');
         if (modelNode) 
         {
-            const connectedNodes = this.getConnectedNodes(modelNode.id);
-            const structure = this.generateStructure(connectedNodes);
+            const interfaceHelpers = new InterfaceHelpers();
+            const connectedNodes = interfaceHelpers.getConnectedNodes(nodes, edges, nodesData, modelNode.id);
+            const structure = interfaceHelpers.generateStructure(connectedNodes, edges);
+
             console.log(JSON.stringify(structure, null, 2));
+
+            if (structure.fonctions.length === 0) 
+            {
+                updateResult({message: "Le modèle n'est pas valide", status: "error"});
+                return;
+            }
+
+            const initialisationFunction = structure.fonctions.find(func => func.label === 'Initialisation');
+            if (initialisationFunction && initialisationFunction.parametres.length == 3) 
+            {
+                const modeleRequest = new ModeleRequest();
+                updateResult({id: this.props.result.length, message: "Initialisation en cours...", status: "loading"});
+                // await modeleRequest.requestInitialisation(structure.modele, { parametres: initialisationFunction.parametres });
+
+            } else {
+                updateResult({id: this.props.result.length, message: "Le modèle n'est pas valide", status: "error"});
+                return
+            }
         }
     }
 
-    
-    
 
     render()
     {

@@ -44,9 +44,19 @@ class Result extends React.Component
     render()
     {
         const { height } = this.state;
+        const { result } = this.props;
         return (
             <div className="result-core f f-justify-center f-align-center" style={{ height: `${height}px`}} ref={this.resultBar}>
-                <p>display result here</p>
+                <div className="result-content f f-column f-align-start f-justify-start">
+                    {result.map((res, index) => 
+                    (
+                        <div key={index} className="result-item f f-row f-align-center f-justify-start">
+                            <span className="result-timestamp">{res.timestamp}</span>
+                            <span className="result-message">{res.message}</span>
+                        </div>
+                        )
+                    )}
+                </div>
                 <div 
                     className="result-resizer" 
                     onMouseDown={this.handleMouseDown}

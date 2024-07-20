@@ -16,19 +16,19 @@
     "methodes": [
       {
         "name": "Initialisation",
-        "input": ["Learning rate", "Neuronnes"],
+        "input": ["Dataset","Learning rate", "Couche Cachée"],
         "output": ["modèle"],
         "type": "fonction_node"
       },
       {
         "name": "Entrainement",
-        "input": ["Epochs", "Batch size", "Classification", "Callback", "Log", "Dataset"],
+        "input": ["Epochs", "Batch size", "Classification", "Callback", "Log"],
         "output": ["Modèle"],
         "type": "fonction_node"
       },
       {
         "name": "Prédiction",
-        "input": ["Type", "Dataset"],
+        "input": [],
         "output": ["modèle"],
         "type": "fonction_node"
       },
@@ -59,21 +59,9 @@
         "type": "parameter_slider_node"
       },
       {
-        "name": "Neuronnes",
-        "input": ["Couche Cachée", "Couche de sortie"],
-        "output": ["Initialisation"],
-        "type": "parameter_node"
-      },
-      {
         "name": "Couche Cachée",
         "input": [],
-        "output": ["Neuronnes"],
-        "type": "parameter_slider_neuronnes_node"
-      },
-      {
-        "name": "Couche de sortie",
-        "input": [],
-        "output": ["Neuronnes"],
+        "output": ["Initialisation"],
         "type": "parameter_slider_neuronnes_node"
       },
       {
@@ -100,36 +88,61 @@
         "name": "Dataset",
         "label": "Xor",
         "input": [],
-        "output": ["Entrainement", "Prédiction"],
-        "type": "dataset_node"
+        "output": ["Initialisation"],
+        "type": "dataset_node",
+        "value": 
+        {
+          "input_size": 4,
+          "output_size": 1
+        }
       },
       {
         "name": "Dataset",
         "label": "Linear simple",
         "input": [],
-        "output": ["Entrainement", "Prédiction"],
-        "type": "dataset_node"
+        "output": ["Initialisation"],
+        "type": "dataset_node",
+        "value": 
+        {
+          "input_size": 3,
+          "output_size": 1
+        }
       },
       {
         "name": "Dataset",
         "label": "Linear multiclass",
         "input": [],
-        "output": ["Entrainement", "Prédiction"],
-        "type": "dataset_node"
+        "output": ["Initialisation"],
+        "type": "dataset_node",
+        "value": 
+        {
+          "input_size": 411,
+          "output_size": 3
+        }
       },
       {
         "name": "Dataset",
         "label": "Cross entropy",
         "input": [],
-        "output": ["Entrainement", "Prédiction"],
-        "type": "dataset_node"
+        "output": ["Initialisation"],
+        "type": "dataset_node",
+        "value": 
+        {
+          "input_size": 500,
+          "output_size": 1
+        }
       },
       {
         "name": "Dataset",
         "label": "ExoPlanet",
         "input": [],
-        "output": ["Entrainement", "Prédiction"],
-        "type": "dataset_node"
+        "output": ["Initialisation"],
+        "type": "dataset_node",
+        "value": 
+        {
+          "input_size": 1200,
+          "output_size": 3
+        }
       }
     ]
   }
