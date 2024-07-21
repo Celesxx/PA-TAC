@@ -6,12 +6,13 @@ const ParameterSliderNode = ({ id, data }) =>
 {
 
   const [sliderValue, setSliderValue] = useState(0);
-  const [order, setOrder] = useState(data.nodeLength || 0);
+  const [order, setOrder] = useState(data.nodeLength || 1);
 
   useEffect(() => 
   {
+    console.log("test"); 
     data.updateNodeData(id, { 'label': data.label, 'value': sliderValue, "order" : data.nodeLength });
-  }, []);
+  }, [sliderValue, id, data.nodeLength]);
 
   useEffect(() => 
   {
@@ -43,12 +44,32 @@ const ParameterSliderNode = ({ id, data }) =>
     return parseFloat(value.toFixed(precision));
   };
 
+  const incrementValue = () => 
+    {
+      setSliderValue(prevValue => 
+      {
+        const newValue = roundValue(prevValue + 1, 1);
+        data.updateNodeData(id, { 'label': data.label, 'value': newValue });
+        return newValue;
+      });
+    };
+  
+    const decrementValue = () => 
+    {
+      setSliderValue(prevValue => 
+      {
+        const newValue = roundValue(prevValue - 1, 1);
+        data.updateNodeData(id, { 'label': data.label, 'value': newValue });
+        return newValue;
+      });
+    };
+
   return (
     <div className="node-parameter">
       <div className="node-parameter-header node-neuronnes f f-rows f-justify-between">
         {data.label}
         {
-          data.label == "Couche Cachée" &&
+          data.label === "Couche Cachée" &&
           (
             <button className="node-parameter-order" onClick={handleOrderChange}>Order: {order}</button>
           )
@@ -74,11 +95,15 @@ const ParameterSliderNode = ({ id, data }) =>
         </div>
       </div>
       <div className="node-parameter-slider f f-column f-align-center f-justify-center">
-        <div className="slider-value">Value: {roundValue(sliderValue, 1)}</div>
+        <div className="slider-control f f-row f-align-center">
+          <button className="slider-button" onClick={decrementValue}>-</button>
+          <div className="slider-value">Value: {roundValue(sliderValue, 1)}</div>
+          <button className="slider-button" onClick={incrementValue}>+</button>
+        </div>
         <input 
           type="range" 
           min={0} 
-          max={1000}
+          max={250}
           step={1}
           value={sliderValue} 
           onChange={handleSliderChange}

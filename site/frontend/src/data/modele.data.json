@@ -16,7 +16,7 @@
     "methodes": [
       {
         "name": "Initialisation",
-        "input": ["Dataset","Learning rate", "Couche Cachée"],
+        "input": ["Dataset","Learning rate", "Neuronnes"],
         "output": ["modèle"],
         "type": "fonction_node"
       },
@@ -59,9 +59,15 @@
         "type": "parameter_slider_node"
       },
       {
+        "name": "Neuronnes",
+        "input": ["Couche Cachée"],
+        "output": ["Initialisation"],
+        "type": "parameter_node"
+      },
+      {
         "name": "Couche Cachée",
         "input": [],
-        "output": ["Initialisation"],
+        "output": ["Neuronnes"],
         "type": "parameter_slider_neuronnes_node"
       },
       {

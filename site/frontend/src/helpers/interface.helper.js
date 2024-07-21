@@ -61,8 +61,10 @@ class InterfaceHelpers
 
         const inputSize = datasetNode ? datasetNode.data.value.input_size : null;
         const outputSize = datasetNode ? datasetNode.data.value.output_size : null;
-
-        const structure = {
+        const datasetName = datasetNode ? datasetNode.data.name : null;
+        
+        const structure = 
+        {
             modele: modelNode.data.label,
             fonctions: functions.map(func => (
             {
@@ -74,20 +76,18 @@ class InterfaceHelpers
                     )
                 ).map(param => 
                 {
-                    if (param.data.label === 'Neuronnes') {
+                    if (param.data.label === 'Neuronnes') 
+                    {
                         const connectedData = getConnectedNodesData(param.id)
                             .filter(data => data.label !== 'Initialisation')
                             .sort((a, b) => a.order - b.order);
 
-                        const coucheSortie = connectedData.find(data => data.label === 'Couche de sortie');
-                        let neuronnesData = connectedData.filter(data => data.label !== 'Couche de sortie')
+                        let neuronnesData = connectedData.filter(data => data.label === 'Couche Cachée')
                             .map(data => data.value || 0);
 
-                        if (coucheSortie) { neuronnesData.push(coucheSortie.value || 0); }
                         if (inputSize !== null) { neuronnesData = [inputSize, ...neuronnesData]; }
                         if (outputSize !== null) { neuronnesData.push(outputSize); }
-
-                        return { label: 'Neuronnes', value: neuronnesData };
+                        return { label: 'Neuronnes', value: neuronnesData, dataset: datasetName};
                     }
                     
                     return {

@@ -4,24 +4,27 @@ import { Handle, Position } from 'reactflow';
 
 const ParameterSliderNode = ({ id, data }) => 
 {
-
+  const isLearningRate = data.label === 'Learning rate';
   const [sliderValue, setSliderValue] = useState(0);
-  const [stepExponent, setStepExponent] = useState(-2);
+  const [stepExponent, setStepExponent] = useState(0);
   const [step, setStep] = useState(Math.pow(10, stepExponent));
 
   useEffect(() => 
   {
+    // if(data.label === 'Learning rate') { setStepExponent(-1); }
+    // else if(data.label === 'Epochs') { setStepExponent(0); }
     const newStep = Math.pow(10, stepExponent);
     setStep(newStep);
     const newMin = newStep;
     const newMax = newStep * 9;
     setSliderValue(Math.max(newMin, Math.min(newMax, sliderValue)));
-  }, [stepExponent]);
+
+  }, [stepExponent, sliderValue]);
 
   useEffect(() => 
   {
     data.updateNodeData(id, { 'label': data.label, 'value': sliderValue });
-  }, []);
+  }, [sliderValue, id, data]);
 
   const handleSliderChange = (event) => 
   {
@@ -91,8 +94,8 @@ const ParameterSliderNode = ({ id, data }) =>
         <input 
           type="range" 
           id="step-slider"
-          min={-10} 
-          max={10}
+          min={data.label === 'Epochs' ? 0 : -10} 
+          max={data.label === 'Learning rate' ? -1 : 10}
           step={1}
           value={stepExponent} 
           onChange={handleStepExponentChange}

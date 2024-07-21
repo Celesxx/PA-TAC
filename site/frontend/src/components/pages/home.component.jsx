@@ -166,6 +166,7 @@ class Home extends React.Component
                   updateNodeData={this.updateNodeData}
                   nodesData={this.state.nodesData}
                   updateAllNodeOrders={this.updateAllNodeOrders}
+                  result={this.state.result}
                   updateResult={this.updateResult}
                 />
                 <Result result={this.state.result}/>

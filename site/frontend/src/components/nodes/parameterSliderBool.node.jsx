@@ -104,7 +104,7 @@ const ParameterSliderBoolNode = ({ id, data }) =>
         />
       </div>
       <div className="node-step-slider f f-column f-align-center f-justify-center">
-        <div className="step-value">Step: 10^ + {stepExponent}</div>
+        <div className="step-value">Step: 10^{stepExponent}</div>
         <input 
           type="range" 
           id="step-slider"

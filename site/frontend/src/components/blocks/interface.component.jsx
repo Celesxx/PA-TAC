@@ -23,20 +23,21 @@ class Interface extends React.Component
             const connectedNodes = interfaceHelpers.getConnectedNodes(nodes, edges, nodesData, modelNode.id);
             const structure = interfaceHelpers.generateStructure(connectedNodes, edges);
 
-            console.log(JSON.stringify(structure, null, 2));
+            // console.log(JSON.stringify(structure, null, 2));
 
             if (structure.fonctions.length === 0) 
             {
-                updateResult({message: "Le modèle n'est pas valide", status: "error"});
+                updateResult({id: this.props.result.length, message: "Le modèle n'est pas valide", status: "error"});
                 return;
             }
 
             const initialisationFunction = structure.fonctions.find(func => func.label === 'Initialisation');
-            if (initialisationFunction && initialisationFunction.parametres.length == 3) 
+            if (initialisationFunction && initialisationFunction.parametres.length == 2) 
             {
                 const modeleRequest = new ModeleRequest();
                 updateResult({id: this.props.result.length, message: "Initialisation en cours...", status: "loading"});
-                // await modeleRequest.requestInitialisation(structure.modele, { parametres: initialisationFunction.parametres });
+                const modeleType = structure.modele === "Perceptron Multi Couche" ? "mlp" : "rbf";
+                await modeleRequest.requestInitialisation(modeleType, { parametres: initialisationFunction.parametres });
 
             } else {
                 updateResult({id: this.props.result.length, message: "Le modèle n'est pas valide", status: "error"});
