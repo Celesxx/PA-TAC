@@ -10,9 +10,8 @@ const ParameterSliderNode = ({ id, data }) =>
 
   useEffect(() => 
   {
-    console.log("test"); 
     data.updateNodeData(id, { 'label': data.label, 'value': sliderValue, "order" : data.nodeLength });
-  }, [sliderValue, id, data.nodeLength]);
+  }, [sliderValue, id]);
 
   useEffect(() => 
   {

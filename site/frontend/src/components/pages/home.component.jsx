@@ -80,7 +80,7 @@ class Home extends React.Component
   onAddNode = (name, label, input, output, type, value) => 
   {
       const { nodes, nodeIndex } = this.state;
-      const position = { x: 200, y: nodeIndex * 75 };
+      const position = { x: 200, y: nodeIndex * 20 };
       const newNode = 
       {
         id: this.getId(),

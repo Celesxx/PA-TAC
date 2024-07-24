@@ -27,6 +27,23 @@
     gap: 1em;
 }
 
+.progress-bar 
+{
+    width: 100%;
+    background-color: #ddd;
+    margin-top: 10px;
+}
+
+.progress-bar-inner 
+{
+    width: 0;
+    height: 20px;
+    background-color: #4caf50;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+}
+
 .result-item 
 {
     gap: 1em;

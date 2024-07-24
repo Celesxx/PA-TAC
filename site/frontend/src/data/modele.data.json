@@ -98,7 +98,7 @@
         "type": "dataset_node",
         "value": 
         {
-          "input_size": 4,
+          "input_size": 2,
           "output_size": 1
         }
       },
@@ -110,7 +110,7 @@
         "type": "dataset_node",
         "value": 
         {
-          "input_size": 3,
+          "input_size": 2,
           "output_size": 1
         }
       },

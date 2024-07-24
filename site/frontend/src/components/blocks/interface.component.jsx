@@ -23,7 +23,7 @@ class Interface extends React.Component
             const connectedNodes = interfaceHelpers.getConnectedNodes(nodes, edges, nodesData, modelNode.id);
             const structure = interfaceHelpers.generateStructure(connectedNodes, edges);
 
-            // console.log(JSON.stringify(structure, null, 2));
+            console.log(JSON.stringify(structure, null, 2));
 
             if (structure.fonctions.length === 0) 
             {
@@ -31,16 +31,18 @@ class Interface extends React.Component
                 return;
             }
 
-            const initialisationFunction = structure.fonctions.find(func => func.label === 'Initialisation');
-            if (initialisationFunction && initialisationFunction.parametres.length == 2) 
+            if (structure.fonctions.length == 4) 
             {
                 const modeleRequest = new ModeleRequest();
-                updateResult({id: this.props.result.length, message: "Initialisation en cours...", status: "loading"});
+                const parameters = structure.fonctions.flatMap(func => func.parametres);
                 const modeleType = structure.modele === "Perceptron Multi Couche" ? "mlp" : "rbf";
-                await modeleRequest.requestInitialisation(modeleType, { parametres: initialisationFunction.parametres });
+
+                const result = await modeleRequest.requestInitialisation(modeleType, { 'parametres': parameters });
+                updateResult({id: this.props.result.length, message: result.data.message, status: result.status, type: "message"});
+                updateResult({id: this.props.result.length, type: "loading"});
 
             } else {
-                updateResult({id: this.props.result.length, message: "Le modèle n'est pas valide", status: "error"});
+                updateResult({id: this.props.result.length, message: "Le modèle n'est pas valide", status: "error", type: "message"});
                 return
             }
         }

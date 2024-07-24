@@ -183,7 +183,8 @@ impl MlpModel
 
     // _________________________________ Train _________________________________
     pub fn train(
-        &mut self, x: &[Vec<f64>], 
+        &mut self, 
+        x: &[Vec<f64>], 
         y: &[Vec<f64>], 
         epochs: usize, 
         batch_size: usize,

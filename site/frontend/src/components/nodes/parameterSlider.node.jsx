@@ -94,8 +94,8 @@ const ParameterSliderNode = ({ id, data }) =>
         <input 
           type="range" 
           id="step-slider"
-          min={data.label === 'Epochs' ? 0 : -10} 
-          max={data.label === 'Learning rate' ? -1 : 10}
+          min={data.label === 'Epochs' || data.label === 'Batch size'  ? 0 : -10} 
+          max={data.label === 'Learning rate' ? -1 : data.label === 'Batch size' ? 5 : 10}
           step={1}
           value={stepExponent} 
           onChange={handleStepExponentChange}
