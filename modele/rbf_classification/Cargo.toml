@@ -1,0 +1,16 @@
+[package]
+name = "rbf_classification"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ndarray = "0.15"
+ndarray-linalg = { version = "0.16.0", features = ["intel-mkl"] }
+rand = "0.8.5"
+plotters = "0.3.6"
+libc = "0.2.155"
+
+[lib]
+name = "rbf_classification"
+path = "src/rbf.rs"
+crate-type = ["cdylib"]

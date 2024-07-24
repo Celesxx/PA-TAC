@@ -67,9 +67,8 @@ impl LinearModel
             't' => tanh(sum),
             'r' => relu(sum),
             _ => sigmoid(sum),
-        };
+        }
 
-        -0.42
     }
 
 }
@@ -128,7 +127,6 @@ pub extern "C" fn LM_train(
 
     let y_vector: Vec<f64> = unsafe { std::slice::from_raw_parts(y, n_samples).to_vec() };
     println!("vector y : {:?}", y_vector);
-    // Entraînez le modèle
     model.train(&x_converted, &y_vector, epochs);
     println!("Training completed");
 }

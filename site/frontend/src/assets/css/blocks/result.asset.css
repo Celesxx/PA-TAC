@@ -1,0 +1,90 @@
+.result-core
+{
+    position: relative;
+    height: 35%;
+    width: 100%;
+    border-top: 2px solid white;
+    overflow: auto;
+}
+
+.result-resizer 
+{
+    position: absolute;
+    width: 100%;
+    height: 10px !important;
+    cursor: ns-resize;
+    top: 0;
+    left: 0;
+}
+
+.result-content 
+{
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    gap: 1em;
+}
+
+.progress-bar 
+{
+    width: 100%;
+    background-color: #ddd;
+    margin-top: 10px;
+}
+
+.progress-bar-inner 
+{
+    width: 0;
+    height: 20px;
+    background-color: #4caf50;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+}
+
+.result-item 
+{
+    gap: 1em;
+    width: 100%;
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.result-timestamp 
+{
+    font-size: 0.8em;
+    color: #888;
+}
+
+.result-message 
+{
+    font-size: 1em;
+    color: #333;
+}
+
+.result-content::-webkit-scrollbar 
+{
+    width: 8px;
+    background-color: transparent;
+}
+
+.result-content::-webkit-scrollbar-thumb 
+{
+    cursor: pointer;
+    border-radius: 50px;
+    background-color: rgb(136, 136, 136) !important;
+    border: 1px solid rgb(180, 180, 180) !important;
+    box-shadow: 0 4px 6px rgb(180, 180, 180, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.result-content::-webkit-scrollbar-track 
+{
+    border-radius: 50px;
+    background-color: transparent;
+    border: 1px solid rgb(136, 136, 136) !important;
+    box-shadow: 0 4px 6px rgb(180, 180, 180, 0.2);
+    backdrop-filter: blur(10px);
+}

@@ -1,10 +1,8 @@
 use crate::mlp::MlpModel;
-use std::os::raw::{c_int, c_double};
-
+use std::os::raw::{c_int, c_double, c_char};
+use std::ffi::CStr;
 
 pub type ProgressCallback = extern "C" fn(epoch: c_int, loss: c_double);
-
-
 
 // _________________________________ Init _________________________________
 #[no_mangle]
@@ -25,7 +23,7 @@ pub extern "C" fn mlpInit(neural_size: *const usize, len: usize, learning_rate: 
 #[no_mangle]
 pub extern "C" fn mlpTrain(
     model: *mut MlpModel,
-    X: *const f64,
+    x: *const f64,
     y: *const f64,
     n_samples: usize,
     n_features: usize,
@@ -34,17 +32,29 @@ pub extern "C" fn mlpTrain(
     batch_size: usize,
     is_classification: bool,
     callback: ProgressCallback,
-    callback_interval: usize
+    callback_interval: usize,
+    checkpoint_enable: bool,
+    checkpoint_interval: usize,
+    log_enable: bool,
+    tag: *const c_char,
 )
 {
     let model = unsafe { &mut *model };
-    let X = unsafe { std::slice::from_raw_parts(X, n_samples * n_features) };
+    let x = unsafe { std::slice::from_raw_parts(x, n_samples * n_features) };
     let y = unsafe { std::slice::from_raw_parts(y, n_samples * n_classes) };
-    let X: Vec<Vec<f64>> = X.chunks_exact(n_features).map(|chunk| chunk.to_vec()).collect();
+    let x: Vec<Vec<f64>> = x.chunks_exact(n_features).map(|chunk| chunk.to_vec()).collect();
     let y: Vec<Vec<f64>> = y.chunks_exact(n_classes).map(|chunk| chunk.to_vec()).collect();
 
-    model.train(&X, &y, epochs, batch_size, is_classification, callback, callback_interval);
+    let tag = unsafe 
+    {
+        assert!(!tag.is_null());
+        CStr::from_ptr(tag).to_str().expect("Invalid UTF-8 string")
+    };
+
+    // model.train(&x, &y, epochs, batch_size, is_classification, callback, callback_interval, "~/log/");
+    model.train(&x, &y, epochs, batch_size, is_classification, callback, callback_interval, checkpoint_enable, checkpoint_interval, log_enable, tag);
 }
+
 
 
 
@@ -134,8 +144,10 @@ pub extern "C" fn mlpPredict(
 
 // _________________________________ Free _________________________________
 #[no_mangle]
-pub extern "C" fn mlpFree(model: *mut MlpModel) {
+pub extern "C" fn mlpFree(model: *mut MlpModel) 
+{
     if !model.is_null() {
-        unsafe { Box::from_raw(model); }
+        unsafe { let _ = Box::from_raw(model); }
     }
+    
 }

@@ -1,0 +1,715 @@
+.
+├── Cargo.lock
+├── Cargo.toml
+├── architecture.txt
+├── src
+│   ├── activation.rs
+│   ├── interop.rs
+│   ├── lib.rs
+│   ├── mlp.rs
+│   ├── neural_matrix.rs
+│   ├── optimizer.rs
+│   └── tensorboard.rs
+└── target
+    ├── CACHEDIR.TAG
+    ├── debug
+    │   ├── build
+    │   │   ├── crossbeam-utils-2456a51c3810f1ec
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-2456a51c3810f1ec
+    │   │   │   └── build_script_build-2456a51c3810f1ec.d
+    │   │   ├── crossbeam-utils-900b80a364d2f4b7
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── libc-6def7a19c3ccbebf
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── libc-a5f595ef1ee1b008
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-a5f595ef1ee1b008
+    │   │   │   └── build_script_build-a5f595ef1ee1b008.d
+    │   │   ├── miniz_oxide-25dddc94ac2450e7
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-25dddc94ac2450e7
+    │   │   │   └── build_script_build-25dddc94ac2450e7.d
+    │   │   ├── miniz_oxide-a92ba40cb3ffb78e
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   │   ├── probe0.ll
+    │   │   │   │   └── probe1.ll
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── num-rational-4f74971329a3447b
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   │   ├── probe0.ll
+    │   │   │   │   └── probe1.ll
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── num-rational-f8a94e2ecc3f99e8
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-f8a94e2ecc3f99e8
+    │   │   │   └── build_script_build-f8a94e2ecc3f99e8.d
+    │   │   ├── num-traits-817f70d9b800eb4b
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   │   ├── probe0.ll
+    │   │   │   │   └── probe1.ll
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── num-traits-f15be61ce935edce
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-f15be61ce935edce
+    │   │   │   └── build_script_build-f15be61ce935edce.d
+    │   │   ├── proc-macro2-4cd713cbdbfba5bc
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-4cd713cbdbfba5bc
+    │   │   │   └── build_script_build-4cd713cbdbfba5bc.d
+    │   │   ├── proc-macro2-d9dc1de8b2e3f3c9
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   │   └── proc_macro2.d
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── protobuf-b487d39e2f58e8e4
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-b487d39e2f58e8e4
+    │   │   │   └── build_script_build-b487d39e2f58e8e4.d
+    │   │   ├── protobuf-cb1812190facf089
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   │   └── version.rs
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── rayon-core-6626aacf3643c9d3
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-6626aacf3643c9d3
+    │   │   │   └── build_script_build-6626aacf3643c9d3.d
+    │   │   ├── rayon-core-f903f63803892d93
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── serde-49fbada51a07879c
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── serde-5ee7bca7885b4489
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-5ee7bca7885b4489
+    │   │   │   └── build_script_build-5ee7bca7885b4489.d
+    │   │   ├── serde_json-11dad0b5f3d891b2
+    │   │   │   ├── invoked.timestamp
+    │   │   │   ├── out
+    │   │   │   ├── output
+    │   │   │   ├── root-output
+    │   │   │   └── stderr
+    │   │   ├── serde_json-9a9329445aa069de
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-9a9329445aa069de
+    │   │   │   └── build_script_build-9a9329445aa069de.d
+    │   │   ├── zerocopy-8d7f043cb0c5cc8d
+    │   │   │   ├── build-script-build
+    │   │   │   ├── build_script_build-8d7f043cb0c5cc8d
+    │   │   │   └── build_script_build-8d7f043cb0c5cc8d.d
+    │   │   └── zerocopy-e63362277b3bf02c
+    │   │       ├── invoked.timestamp
+    │   │       ├── out
+    │   │       ├── output
+    │   │       ├── root-output
+    │   │       └── stderr
+    │   ├── deps
+    │   │   ├── adler-052b8c484ad6f7e0.d
+    │   │   ├── adler32-f7cc7454f126bd40.d
+    │   │   ├── autocfg-22eeb013b9dfb539.d
+    │   │   ├── bitflags-d752d6c3566f79d3.d
+    │   │   ├── bytemuck-0071e6f00db2e4bc.d
+    │   │   ├── byteorder-28125c5228e44307.d
+    │   │   ├── cfg_if-cc9cb5b64779c561.d
+    │   │   ├── chrono-555e4a7721a3444f.d
+    │   │   ├── color_quant-65a1f80f1e7396ab.d
+    │   │   ├── crc32fast-4bed80bdf3962fdf.d
+    │   │   ├── crossbeam_deque-63597d26ee8a5e9d.d
+    │   │   ├── crossbeam_epoch-55dfd8fb3192eb61.d
+    │   │   ├── crossbeam_utils-775685b8088bae2c.d
+    │   │   ├── deflate-2ad47441fac202ed.d
+    │   │   ├── either-79eabdd35c74643d.d
+    │   │   ├── gethostname-fba56ca80933e39b.d
+    │   │   ├── getrandom-c5c80883f037a992.d
+    │   │   ├── gif-3bed972bad45499a.d
+    │   │   ├── iana_time_zone-9bea713a6d9d6d35.d
+    │   │   ├── image-e20dcf187e9e9a02.d
+    │   │   ├── itoa-f2037d62b257efef.d
+    │   │   ├── jpeg_decoder-6396e54bc1bc0154.d
+    │   │   ├── libadler-052b8c484ad6f7e0.rlib
+    │   │   ├── libadler-052b8c484ad6f7e0.rmeta
+    │   │   ├── libadler32-f7cc7454f126bd40.rlib
+    │   │   ├── libadler32-f7cc7454f126bd40.rmeta
+    │   │   ├── libautocfg-22eeb013b9dfb539.rlib
+    │   │   ├── libautocfg-22eeb013b9dfb539.rmeta
+    │   │   ├── libbitflags-d752d6c3566f79d3.rlib
+    │   │   ├── libbitflags-d752d6c3566f79d3.rmeta
+    │   │   ├── libbytemuck-0071e6f00db2e4bc.rlib
+    │   │   ├── libbytemuck-0071e6f00db2e4bc.rmeta
+    │   │   ├── libbyteorder-28125c5228e44307.rlib
+    │   │   ├── libbyteorder-28125c5228e44307.rmeta
+    │   │   ├── libc-b23b01498c449642.d
+    │   │   ├── libcfg_if-cc9cb5b64779c561.rlib
+    │   │   ├── libcfg_if-cc9cb5b64779c561.rmeta
+    │   │   ├── libchrono-555e4a7721a3444f.rlib
+    │   │   ├── libchrono-555e4a7721a3444f.rmeta
+    │   │   ├── libcolor_quant-65a1f80f1e7396ab.rlib
+    │   │   ├── libcolor_quant-65a1f80f1e7396ab.rmeta
+    │   │   ├── libcrc32fast-4bed80bdf3962fdf.rlib
+    │   │   ├── libcrc32fast-4bed80bdf3962fdf.rmeta
+    │   │   ├── libcrossbeam_deque-63597d26ee8a5e9d.rlib
+    │   │   ├── libcrossbeam_deque-63597d26ee8a5e9d.rmeta
+    │   │   ├── libcrossbeam_epoch-55dfd8fb3192eb61.rlib
+    │   │   ├── libcrossbeam_epoch-55dfd8fb3192eb61.rmeta
+    │   │   ├── libcrossbeam_utils-775685b8088bae2c.rlib
+    │   │   ├── libcrossbeam_utils-775685b8088bae2c.rmeta
+    │   │   ├── libdeflate-2ad47441fac202ed.rlib
+    │   │   ├── libdeflate-2ad47441fac202ed.rmeta
+    │   │   ├── libeither-79eabdd35c74643d.rlib
+    │   │   ├── libeither-79eabdd35c74643d.rmeta
+    │   │   ├── libgethostname-fba56ca80933e39b.rlib
+    │   │   ├── libgethostname-fba56ca80933e39b.rmeta
+    │   │   ├── libgetrandom-c5c80883f037a992.rlib
+    │   │   ├── libgetrandom-c5c80883f037a992.rmeta
+    │   │   ├── libgif-3bed972bad45499a.rlib
+    │   │   ├── libgif-3bed972bad45499a.rmeta
+    │   │   ├── libiana_time_zone-9bea713a6d9d6d35.rlib
+    │   │   ├── libiana_time_zone-9bea713a6d9d6d35.rmeta
+    │   │   ├── libimage-e20dcf187e9e9a02.rlib
+    │   │   ├── libimage-e20dcf187e9e9a02.rmeta
+    │   │   ├── libitoa-f2037d62b257efef.rlib
+    │   │   ├── libitoa-f2037d62b257efef.rmeta
+    │   │   ├── libjpeg_decoder-6396e54bc1bc0154.rlib
+    │   │   ├── libjpeg_decoder-6396e54bc1bc0154.rmeta
+    │   │   ├── liblibc-b23b01498c449642.rlib
+    │   │   ├── liblibc-b23b01498c449642.rmeta
+    │   │   ├── libminiz_oxide-0a22d9f474d5b4b0.rlib
+    │   │   ├── libminiz_oxide-0a22d9f474d5b4b0.rmeta
+    │   │   ├── libminiz_oxide-4a5bcc436edf13ed.rlib
+    │   │   ├── libminiz_oxide-4a5bcc436edf13ed.rmeta
+    │   │   ├── libmlp_classification.so
+    │   │   ├── libnum_integer-236f2424d2eccbca.rlib
+    │   │   ├── libnum_integer-236f2424d2eccbca.rmeta
+    │   │   ├── libnum_iter-08b391e35f832ff4.rlib
+    │   │   ├── libnum_iter-08b391e35f832ff4.rmeta
+    │   │   ├── libnum_rational-8b9813b136cf2d5a.rlib
+    │   │   ├── libnum_rational-8b9813b136cf2d5a.rmeta
+    │   │   ├── libnum_traits-4a887ccc39f10647.rlib
+    │   │   ├── libnum_traits-4a887ccc39f10647.rmeta
+    │   │   ├── libpng-dfdc8fa2891ccbbd.rlib
+    │   │   ├── libpng-dfdc8fa2891ccbbd.rmeta
+    │   │   ├── libppv_lite86-4c7abedf3a497056.rlib
+    │   │   ├── libppv_lite86-4c7abedf3a497056.rmeta
+    │   │   ├── libproc_macro2-1ba7e992f494c400.rlib
+    │   │   ├── libproc_macro2-1ba7e992f494c400.rmeta
+    │   │   ├── libprotobuf-36196d2392d6d7cc.rlib
+    │   │   ├── libprotobuf-36196d2392d6d7cc.rmeta
+    │   │   ├── libquote-e858fd1473bea0ee.rlib
+    │   │   ├── libquote-e858fd1473bea0ee.rmeta
+    │   │   ├── librand-daaf2b3950bc06a9.rlib
+    │   │   ├── librand-daaf2b3950bc06a9.rmeta
+    │   │   ├── librand_chacha-8de72eb9ca6f543b.rlib
+    │   │   ├── librand_chacha-8de72eb9ca6f543b.rmeta
+    │   │   ├── librand_core-ee0ea3f8f741d900.rlib
+    │   │   ├── librand_core-ee0ea3f8f741d900.rmeta
+    │   │   ├── librayon-ed5ebb2eb4e30641.rlib
+    │   │   ├── librayon-ed5ebb2eb4e30641.rmeta
+    │   │   ├── librayon_core-cdc73f686897deaf.rlib
+    │   │   ├── librayon_core-cdc73f686897deaf.rmeta
+    │   │   ├── libryu-76b5c89a6b8a40ec.rlib
+    │   │   ├── libryu-76b5c89a6b8a40ec.rmeta
+    │   │   ├── libscoped_threadpool-ce431ad75554084d.rlib
+    │   │   ├── libscoped_threadpool-ce431ad75554084d.rmeta
+    │   │   ├── libserde-24a56cc07a0cf61f.rlib
+    │   │   ├── libserde-24a56cc07a0cf61f.rmeta
+    │   │   ├── libserde_derive-3cdd763c3a3aa9cd.so
+    │   │   ├── libserde_json-08c55c250a00e4a5.rlib
+    │   │   ├── libserde_json-08c55c250a00e4a5.rmeta
+    │   │   ├── libsyn-422407f99a9e1d7b.rlib
+    │   │   ├── libsyn-422407f99a9e1d7b.rmeta
+    │   │   ├── libtensorboard_proto-3c1c820987abdbce.rlib
+    │   │   ├── libtensorboard_proto-3c1c820987abdbce.rmeta
+    │   │   ├── libtensorboard_rs-bdfe185f0f13894e.rlib
+    │   │   ├── libtensorboard_rs-bdfe185f0f13894e.rmeta
+    │   │   ├── libtiff-c0c4edab4eea85c7.rlib
+    │   │   ├── libtiff-c0c4edab4eea85c7.rmeta
+    │   │   ├── libunicode_ident-c0856f1346db7e41.rlib
+    │   │   ├── libunicode_ident-c0856f1346db7e41.rmeta
+    │   │   ├── libweezl-fb9e30b078f39a9e.rlib
+    │   │   ├── libweezl-fb9e30b078f39a9e.rmeta
+    │   │   ├── libzerocopy-67b3da4d680de406.rlib
+    │   │   ├── libzerocopy-67b3da4d680de406.rmeta
+    │   │   ├── miniz_oxide-0a22d9f474d5b4b0.d
+    │   │   ├── miniz_oxide-4a5bcc436edf13ed.d
+    │   │   ├── mlp_classification.d
+    │   │   ├── num_integer-236f2424d2eccbca.d
+    │   │   ├── num_iter-08b391e35f832ff4.d
+    │   │   ├── num_rational-8b9813b136cf2d5a.d
+    │   │   ├── num_traits-4a887ccc39f10647.d
+    │   │   ├── png-dfdc8fa2891ccbbd.d
+    │   │   ├── ppv_lite86-4c7abedf3a497056.d
+    │   │   ├── proc_macro2-1ba7e992f494c400.d
+    │   │   ├── protobuf-36196d2392d6d7cc.d
+    │   │   ├── quote-e858fd1473bea0ee.d
+    │   │   ├── rand-daaf2b3950bc06a9.d
+    │   │   ├── rand_chacha-8de72eb9ca6f543b.d
+    │   │   ├── rand_core-ee0ea3f8f741d900.d
+    │   │   ├── rayon-ed5ebb2eb4e30641.d
+    │   │   ├── rayon_core-cdc73f686897deaf.d
+    │   │   ├── ryu-76b5c89a6b8a40ec.d
+    │   │   ├── scoped_threadpool-ce431ad75554084d.d
+    │   │   ├── serde-24a56cc07a0cf61f.d
+    │   │   ├── serde_derive-3cdd763c3a3aa9cd.d
+    │   │   ├── serde_json-08c55c250a00e4a5.d
+    │   │   ├── syn-422407f99a9e1d7b.d
+    │   │   ├── tensorboard_proto-3c1c820987abdbce.d
+    │   │   ├── tensorboard_rs-bdfe185f0f13894e.d
+    │   │   ├── tiff-c0c4edab4eea85c7.d
+    │   │   ├── unicode_ident-c0856f1346db7e41.d
+    │   │   ├── weezl-fb9e30b078f39a9e.d
+    │   │   └── zerocopy-67b3da4d680de406.d
+    │   ├── examples
+    │   ├── incremental
+    │   │   └── mlp_classification-3m44peix3t16w
+    │   │       ├── s-gx3s9bde98-r27m1b-b93m9119uarlw8egtrd3wu0kg
+    │   │       │   ├── 109dp3a4dkki5zlv.o
+    │   │       │   ├── 10s55l6nmgcjof2b.o
+    │   │       │   ├── 14a6qbwgv4kcpyos.o
+    │   │       │   ├── 159kg8rr4lfw9ka2.o
+    │   │       │   ├── 19sb1xq2evs296jn.o
+    │   │       │   ├── 19tzt89wen9z8uq.o
+    │   │       │   ├── 1a9jcmbthd32bxra.o
+    │   │       │   ├── 1and67rc5vghqx2n.o
+    │   │       │   ├── 1b2z9vqx08zh2mh5.o
+    │   │       │   ├── 1daxfcypxfzg2j8i.o
+    │   │       │   ├── 1e8ega3ijpy3pjyw.o
+    │   │       │   ├── 1fdwaosjvdeh3h8.o
+    │   │       │   ├── 1jseh7knfebq0dn4.o
+    │   │       │   ├── 1kt7n20f2vj0gqup.o
+    │   │       │   ├── 1ktv4m9iukmaehgp.o
+    │   │       │   ├── 1pk85djws794kzoe.o
+    │   │       │   ├── 1puiwbz6whmaamo2.o
+    │   │       │   ├── 1q3syjnjnk8n5b69.o
+    │   │       │   ├── 1quwq6bqpyes2biz.o
+    │   │       │   ├── 1rcuftucyy57dbqx.o
+    │   │       │   ├── 1son52f642kfyi1h.o
+    │   │       │   ├── 1wi9msctddtt9797.o
+    │   │       │   ├── 1wys2926tq7zmn1z.o
+    │   │       │   ├── 1x6ovfv00b6eat85.o
+    │   │       │   ├── 1xruau809l5hooq.o
+    │   │       │   ├── 1yebxf631sbdxd53.o
+    │   │       │   ├── 206jgk6hoyqek2cc.o
+    │   │       │   ├── 212g4hvua92vu0w4.o
+    │   │       │   ├── 225cbtpfvr9n24hy.o
+    │   │       │   ├── 2271ojhvmprp05iw.o
+    │   │       │   ├── 2373rwdsaobttnyz.o
+    │   │       │   ├── 25vj83nx0y89vtgt.o
+    │   │       │   ├── 26wwh09ivtyrqtce.o
+    │   │       │   ├── 285x2lnrpyfcufhi.o
+    │   │       │   ├── 28yimc2lae7dl9hh.o
+    │   │       │   ├── 2938r50uiumvyrl7.o
+    │   │       │   ├── 29rk6vixl5at4hcz.o
+    │   │       │   ├── 2akupficf52busa0.o
+    │   │       │   ├── 2cpdfcqubrdtnokk.o
+    │   │       │   ├── 2eqmbayrw5aej640.o
+    │   │       │   ├── 2f4ykm4rdth2j9db.o
+    │   │       │   ├── 2fzdellhddgrqa9r.o
+    │   │       │   ├── 2gyoyidgdbnnaaut.o
+    │   │       │   ├── 2jnlm4moa74z20eh.o
+    │   │       │   ├── 2psqpl1ybzdv9k8g.o
+    │   │       │   ├── 2srkniqxyt2e2asm.o
+    │   │       │   ├── 2u1zbdd6aa8w2xk3.o
+    │   │       │   ├── 2vju69jc2kt3heit.o
+    │   │       │   ├── 2wumubglvj3mrk16.o
+    │   │       │   ├── 30bnrmryb7hjuqli.o
+    │   │       │   ├── 30gqb0uccu3a7twp.o
+    │   │       │   ├── 33cex744t5nbies9.o
+    │   │       │   ├── 347bsnelkim4czh4.o
+    │   │       │   ├── 3560p9etur5qtb5h.o
+    │   │       │   ├── 3691kr8w2vdh2lue.o
+    │   │       │   ├── 36yijhh7hdzh57z5.o
+    │   │       │   ├── 3bv2s2204svr31zs.o
+    │   │       │   ├── 3dwznkilx7nzfyg1.o
+    │   │       │   ├── 3fr6ommnnqsbo745.o
+    │   │       │   ├── 3kntd9ejurjupa8l.o
+    │   │       │   ├── 3kz1weys972a57ez.o
+    │   │       │   ├── 3pgc44zrt588yfxa.o
+    │   │       │   ├── 3pttboe2iwmnmsg3.o
+    │   │       │   ├── 3pyk5vacrkjwsgga.o
+    │   │       │   ├── 3rfoj2h459jl1qr4.o
+    │   │       │   ├── 3tztdyyf2su4r3g5.o
+    │   │       │   ├── 3x5n5dmdqop6xq40.o
+    │   │       │   ├── 3z7habvtisot2175.o
+    │   │       │   ├── 3zwtpvcu69s591cb.o
+    │   │       │   ├── 40zy7qha58lk2zw4.o
+    │   │       │   ├── 41ruc6pqapdoukgr.o
+    │   │       │   ├── 43j4kp2flj4qhrib.o
+    │   │       │   ├── 44kre9u5z7wcomql.o
+    │   │       │   ├── 45dhq7a5lvszf1c9.o
+    │   │       │   ├── 47kyjzdg9eley90w.o
+    │   │       │   ├── 484lwl7jitzqglg1.o
+    │   │       │   ├── 4bgkory32v9mwp0e.o
+    │   │       │   ├── 4bmpq3bo2a403vfo.o
+    │   │       │   ├── 4citdnrd51ta3ssq.o
+    │   │       │   ├── 4cqgsmdxzyafvux5.o
+    │   │       │   ├── 4exu8zmg2l8stpez.o
+    │   │       │   ├── 4fea3w7uqknan78r.o
+    │   │       │   ├── 4lcmfz0t3ad1g2f8.o
+    │   │       │   ├── 4oj1tml2r4z7i6ec.o
+    │   │       │   ├── 4r7kbi7e4oaklqit.o
+    │   │       │   ├── 4recxjsoi2ryq9pg.o
+    │   │       │   ├── 4sj3l8gnys61s9w4.o
+    │   │       │   ├── 4ud17w3ue4ibfjo5.o
+    │   │       │   ├── 4wuv0l9bodlxt4gp.o
+    │   │       │   ├── 4zl3xjftlghtbbwp.o
+    │   │       │   ├── 50yrplb8eu1fmcb.o
+    │   │       │   ├── 51y9ksichl4q02en.o
+    │   │       │   ├── 55qz0pyrwndvf35u.o
+    │   │       │   ├── 5dhdmfsnmgrp2qfc.o
+    │   │       │   ├── 5edi6ow8y3nyr4q7.o
+    │   │       │   ├── 5eet4k7k4hvzcsmw.o
+    │   │       │   ├── 5fw58riy5anjbzqe.o
+    │   │       │   ├── 7175w12jgy0c3cj.o
+    │   │       │   ├── 8l15epih2j334mt.o
+    │   │       │   ├── aemcrkz1w1m2aay.o
+    │   │       │   ├── d6i7pxz347kduqj.o
+    │   │       │   ├── dep-graph.bin
+    │   │       │   ├── drfy0534ee8r6o9.o
+    │   │       │   ├── ikt1vbae0lj2xv.o
+    │   │       │   ├── ir7crp28h4gqf0a.o
+    │   │       │   ├── jxo6c16kdrspyr0.o
+    │   │       │   ├── k7x7ojh9fxml16a.o
+    │   │       │   ├── l6tmmu3srltm1oq.o
+    │   │       │   ├── ox6v6m36brawhau.o
+    │   │       │   ├── query-cache.bin
+    │   │       │   ├── work-products.bin
+    │   │       │   ├── zgoxgiyfvt4xjjb.o
+    │   │       │   └── zo5yf4dxz618o6q.o
+    │   │       └── s-gx3s9bde98-r27m1b.lock
+    │   ├── libmlp_classification.d
+    │   └── libmlp_classification.so
+    └── release
+        ├── build
+        │   ├── crossbeam-utils-18fb89c7b412ba9c
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-18fb89c7b412ba9c
+        │   │   └── build_script_build-18fb89c7b412ba9c.d
+        │   ├── crossbeam-utils-4be01e54199a8d3b
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── libc-7b2e46f26c6047c0
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── libc-8c9f89301448c554
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── libc-c72a3b911e6fe007
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-c72a3b911e6fe007
+        │   │   └── build_script_build-c72a3b911e6fe007.d
+        │   ├── libc-d3200aba82bbe978
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-d3200aba82bbe978
+        │   │   └── build_script_build-d3200aba82bbe978.d
+        │   ├── miniz_oxide-0d387288840f4557
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   │   ├── probe0.ll
+        │   │   │   └── probe1.ll
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── miniz_oxide-1b2c7b81193625ce
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-1b2c7b81193625ce
+        │   │   └── build_script_build-1b2c7b81193625ce.d
+        │   ├── num-rational-a3a0a5e4ae472ef6
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   │   ├── probe0.ll
+        │   │   │   └── probe1.ll
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── num-rational-d5cd507b183f3250
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-d5cd507b183f3250
+        │   │   └── build_script_build-d5cd507b183f3250.d
+        │   ├── num-traits-97e9cbb4a9699377
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-97e9cbb4a9699377
+        │   │   └── build_script_build-97e9cbb4a9699377.d
+        │   ├── num-traits-a4fa84c6355fdeba
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   │   ├── probe0.ll
+        │   │   │   └── probe1.ll
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── proc-macro2-b0c0e5d88f833886
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-b0c0e5d88f833886
+        │   │   └── build_script_build-b0c0e5d88f833886.d
+        │   ├── proc-macro2-c3b518aed6fd5fa1
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   │   └── proc_macro2.d
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── protobuf-b35bf25f7065dae7
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   │   └── version.rs
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── protobuf-f0dbc6eda663b683
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-f0dbc6eda663b683
+        │   │   └── build_script_build-f0dbc6eda663b683.d
+        │   ├── rayon-core-87e24150b2f90bb7
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-87e24150b2f90bb7
+        │   │   └── build_script_build-87e24150b2f90bb7.d
+        │   ├── rayon-core-960282ce21cfbfea
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── serde-0b73f31d8f05ed53
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── serde-9b0b9ef5a1809a32
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-9b0b9ef5a1809a32
+        │   │   └── build_script_build-9b0b9ef5a1809a32.d
+        │   ├── serde_json-9cd25a80eea11b27
+        │   │   ├── invoked.timestamp
+        │   │   ├── out
+        │   │   ├── output
+        │   │   ├── root-output
+        │   │   └── stderr
+        │   ├── serde_json-cf922012e07bab58
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-cf922012e07bab58
+        │   │   └── build_script_build-cf922012e07bab58.d
+        │   ├── zerocopy-2b1ed96112683761
+        │   │   ├── build-script-build
+        │   │   ├── build_script_build-2b1ed96112683761
+        │   │   └── build_script_build-2b1ed96112683761.d
+        │   └── zerocopy-8ad77ab024e456bd
+        │       ├── invoked.timestamp
+        │       ├── out
+        │       ├── output
+        │       ├── root-output
+        │       └── stderr
+        ├── deps
+        │   ├── adler-12416c6f331bbf17.d
+        │   ├── adler32-2104aa2a175cb184.d
+        │   ├── autocfg-128fd31347cbb237.d
+        │   ├── bitflags-a9e4675ae5aaa161.d
+        │   ├── bytemuck-4f972bde53eb3c40.d
+        │   ├── byteorder-95bc922e90dc5288.d
+        │   ├── cfg_if-4370f25e8044026f.d
+        │   ├── chrono-c320fab5bc678eb9.d
+        │   ├── color_quant-86df9756530998e2.d
+        │   ├── crc32fast-41f669323c44c213.d
+        │   ├── crossbeam_deque-ef31ccb1175bdd9c.d
+        │   ├── crossbeam_epoch-531f6e7d3222a6f3.d
+        │   ├── crossbeam_utils-9f9275b4f1d2e15e.d
+        │   ├── deflate-dab172f4f94ee920.d
+        │   ├── either-931e4d0c4e7b2c75.d
+        │   ├── gethostname-5f2b85ae0d5d3d34.d
+        │   ├── getrandom-2675b0b1b4c7f943.d
+        │   ├── getrandom-b0280beb741a1519.d
+        │   ├── gif-df8118a34a48b92a.d
+        │   ├── iana_time_zone-b6c50d96eb2523a5.d
+        │   ├── image-0a374a76c325df73.d
+        │   ├── itoa-b28375730ec7d8f1.d
+        │   ├── jpeg_decoder-186cbb19d128a883.d
+        │   ├── libadler-12416c6f331bbf17.rlib
+        │   ├── libadler-12416c6f331bbf17.rmeta
+        │   ├── libadler32-2104aa2a175cb184.rlib
+        │   ├── libadler32-2104aa2a175cb184.rmeta
+        │   ├── libautocfg-128fd31347cbb237.rlib
+        │   ├── libautocfg-128fd31347cbb237.rmeta
+        │   ├── libbitflags-a9e4675ae5aaa161.rlib
+        │   ├── libbitflags-a9e4675ae5aaa161.rmeta
+        │   ├── libbytemuck-4f972bde53eb3c40.rlib
+        │   ├── libbytemuck-4f972bde53eb3c40.rmeta
+        │   ├── libbyteorder-95bc922e90dc5288.rlib
+        │   ├── libbyteorder-95bc922e90dc5288.rmeta
+        │   ├── libc-5b2a98c34e4317b9.d
+        │   ├── libc-7854c6c35e5294ac.d
+        │   ├── libcfg_if-4370f25e8044026f.rlib
+        │   ├── libcfg_if-4370f25e8044026f.rmeta
+        │   ├── libchrono-c320fab5bc678eb9.rlib
+        │   ├── libchrono-c320fab5bc678eb9.rmeta
+        │   ├── libcolor_quant-86df9756530998e2.rlib
+        │   ├── libcolor_quant-86df9756530998e2.rmeta
+        │   ├── libcrc32fast-41f669323c44c213.rlib
+        │   ├── libcrc32fast-41f669323c44c213.rmeta
+        │   ├── libcrossbeam_deque-ef31ccb1175bdd9c.rlib
+        │   ├── libcrossbeam_deque-ef31ccb1175bdd9c.rmeta
+        │   ├── libcrossbeam_epoch-531f6e7d3222a6f3.rlib
+        │   ├── libcrossbeam_epoch-531f6e7d3222a6f3.rmeta
+        │   ├── libcrossbeam_utils-9f9275b4f1d2e15e.rlib
+        │   ├── libcrossbeam_utils-9f9275b4f1d2e15e.rmeta
+        │   ├── libdeflate-dab172f4f94ee920.rlib
+        │   ├── libdeflate-dab172f4f94ee920.rmeta
+        │   ├── libeither-931e4d0c4e7b2c75.rlib
+        │   ├── libeither-931e4d0c4e7b2c75.rmeta
+        │   ├── libgethostname-5f2b85ae0d5d3d34.rlib
+        │   ├── libgethostname-5f2b85ae0d5d3d34.rmeta
+        │   ├── libgetrandom-2675b0b1b4c7f943.rlib
+        │   ├── libgetrandom-2675b0b1b4c7f943.rmeta
+        │   ├── libgetrandom-b0280beb741a1519.rlib
+        │   ├── libgetrandom-b0280beb741a1519.rmeta
+        │   ├── libgif-df8118a34a48b92a.rlib
+        │   ├── libgif-df8118a34a48b92a.rmeta
+        │   ├── libiana_time_zone-b6c50d96eb2523a5.rlib
+        │   ├── libiana_time_zone-b6c50d96eb2523a5.rmeta
+        │   ├── libimage-0a374a76c325df73.rlib
+        │   ├── libimage-0a374a76c325df73.rmeta
+        │   ├── libitoa-b28375730ec7d8f1.rlib
+        │   ├── libitoa-b28375730ec7d8f1.rmeta
+        │   ├── libjpeg_decoder-186cbb19d128a883.rlib
+        │   ├── libjpeg_decoder-186cbb19d128a883.rmeta
+        │   ├── liblibc-5b2a98c34e4317b9.rlib
+        │   ├── liblibc-5b2a98c34e4317b9.rmeta
+        │   ├── liblibc-7854c6c35e5294ac.rlib
+        │   ├── liblibc-7854c6c35e5294ac.rmeta
+        │   ├── libminiz_oxide-3eb33316e5fed6fc.rlib
+        │   ├── libminiz_oxide-3eb33316e5fed6fc.rmeta
+        │   ├── libminiz_oxide-55b35d024027ed27.rlib
+        │   ├── libminiz_oxide-55b35d024027ed27.rmeta
+        │   ├── libmlp_classification.so
+        │   ├── libnum_integer-47d13c8e28e11e19.rlib
+        │   ├── libnum_integer-47d13c8e28e11e19.rmeta
+        │   ├── libnum_iter-02604a37fca07ee5.rlib
+        │   ├── libnum_iter-02604a37fca07ee5.rmeta
+        │   ├── libnum_rational-44ff7be20b74303c.rlib
+        │   ├── libnum_rational-44ff7be20b74303c.rmeta
+        │   ├── libnum_traits-e60ce6e784e21d63.rlib
+        │   ├── libnum_traits-e60ce6e784e21d63.rmeta
+        │   ├── libpng-56c08fd7d3f04173.rlib
+        │   ├── libpng-56c08fd7d3f04173.rmeta
+        │   ├── libppv_lite86-33c48e84bd2538f2.rlib
+        │   ├── libppv_lite86-33c48e84bd2538f2.rmeta
+        │   ├── libproc_macro2-95ac2429537a4b7f.rlib
+        │   ├── libproc_macro2-95ac2429537a4b7f.rmeta
+        │   ├── libprotobuf-ec4a471eefb71d08.rlib
+        │   ├── libprotobuf-ec4a471eefb71d08.rmeta
+        │   ├── libquote-dfc9baa0c3b15d52.rlib
+        │   ├── libquote-dfc9baa0c3b15d52.rmeta
+        │   ├── librand-84fba290ef4ecc5f.rlib
+        │   ├── librand-84fba290ef4ecc5f.rmeta
+        │   ├── librand-d4921b5f89fe32af.rlib
+        │   ├── librand-d4921b5f89fe32af.rmeta
+        │   ├── librand_chacha-7a6e878a76a8c2aa.rlib
+        │   ├── librand_chacha-7a6e878a76a8c2aa.rmeta
+        │   ├── librand_chacha-d97907999a327d91.rlib
+        │   ├── librand_chacha-d97907999a327d91.rmeta
+        │   ├── librand_core-6dd798874b447cdc.rlib
+        │   ├── librand_core-6dd798874b447cdc.rmeta
+        │   ├── librand_core-793e9a907b48d87b.rlib
+        │   ├── librand_core-793e9a907b48d87b.rmeta
+        │   ├── librayon-31cf5e640da15a18.rlib
+        │   ├── librayon-31cf5e640da15a18.rmeta
+        │   ├── librayon_core-4e5c473353005522.rlib
+        │   ├── librayon_core-4e5c473353005522.rmeta
+        │   ├── libryu-a833fcb7a7c72c14.rlib
+        │   ├── libryu-a833fcb7a7c72c14.rmeta
+        │   ├── libscoped_threadpool-f529849a5d7494d1.rlib
+        │   ├── libscoped_threadpool-f529849a5d7494d1.rmeta
+        │   ├── libserde-500f05410d1b86a2.rlib
+        │   ├── libserde-500f05410d1b86a2.rmeta
+        │   ├── libserde_derive-ce334093d7c0aab4.so
+        │   ├── libserde_json-f06596149dc8fba6.rlib
+        │   ├── libserde_json-f06596149dc8fba6.rmeta
+        │   ├── libsyn-733984370ad9ad41.rlib
+        │   ├── libsyn-733984370ad9ad41.rmeta
+        │   ├── libtensorboard_proto-e337b835dafd7e2c.rlib
+        │   ├── libtensorboard_proto-e337b835dafd7e2c.rmeta
+        │   ├── libtensorboard_rs-424b722d9379318e.rlib
+        │   ├── libtensorboard_rs-424b722d9379318e.rmeta
+        │   ├── libtiff-f9aee77de5f78851.rlib
+        │   ├── libtiff-f9aee77de5f78851.rmeta
+        │   ├── libunicode_ident-4e6a3bb65b6314de.rlib
+        │   ├── libunicode_ident-4e6a3bb65b6314de.rmeta
+        │   ├── libweezl-9169f4f5f85a2a70.rlib
+        │   ├── libweezl-9169f4f5f85a2a70.rmeta
+        │   ├── libzerocopy-a80f8427900a02de.rlib
+        │   ├── libzerocopy-a80f8427900a02de.rmeta
+        │   ├── miniz_oxide-3eb33316e5fed6fc.d
+        │   ├── miniz_oxide-55b35d024027ed27.d
+        │   ├── mlp_classification.d
+        │   ├── num_integer-47d13c8e28e11e19.d
+        │   ├── num_iter-02604a37fca07ee5.d
+        │   ├── num_rational-44ff7be20b74303c.d
+        │   ├── num_traits-e60ce6e784e21d63.d
+        │   ├── png-56c08fd7d3f04173.d
+        │   ├── ppv_lite86-33c48e84bd2538f2.d
+        │   ├── proc_macro2-95ac2429537a4b7f.d
+        │   ├── protobuf-ec4a471eefb71d08.d
+        │   ├── quote-dfc9baa0c3b15d52.d
+        │   ├── rand-84fba290ef4ecc5f.d
+        │   ├── rand-d4921b5f89fe32af.d
+        │   ├── rand_chacha-7a6e878a76a8c2aa.d
+        │   ├── rand_chacha-d97907999a327d91.d
+        │   ├── rand_core-6dd798874b447cdc.d
+        │   ├── rand_core-793e9a907b48d87b.d
+        │   ├── rayon-31cf5e640da15a18.d
+        │   ├── rayon_core-4e5c473353005522.d
+        │   ├── ryu-a833fcb7a7c72c14.d
+        │   ├── scoped_threadpool-f529849a5d7494d1.d
+        │   ├── serde-500f05410d1b86a2.d
+        │   ├── serde_derive-ce334093d7c0aab4.d
+        │   ├── serde_json-f06596149dc8fba6.d
+        │   ├── syn-733984370ad9ad41.d
+        │   ├── tensorboard_proto-e337b835dafd7e2c.d
+        │   ├── tensorboard_rs-424b722d9379318e.d
+        │   ├── tiff-f9aee77de5f78851.d
+        │   ├── unicode_ident-4e6a3bb65b6314de.d
+        │   ├── weezl-9169f4f5f85a2a70.d
+        │   └── zerocopy-a80f8427900a02de.d
+        ├── examples
+        ├── incremental
+        ├── libmlp_classification.d
+        └── libmlp_classification.so
+
+83 directories, 629 files

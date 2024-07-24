@@ -1,0 +1,266 @@
+.nodes-edges > path
+{
+  stroke: white !important;
+}
+.node-modele
+{
+  border: 2px solid rgba(122, 0, 0, 1);
+  box-shadow: 0 3px 5px rgba(255, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+.modele-node, .fonction-node, .parameter-node, .dataset-node
+{
+    border-radius: 5px;
+    background-color: rgba(14, 17, 23, 1);
+    color: white;
+}
+
+.node-modele-header, .node-fonction-header, .node-parameter-header, .node-dataset-header
+{
+  padding: 10px !important;
+  margin: 0 !important;
+  height: 100%;
+  font-weight: bold;
+  margin-bottom: 5px;
+  border-bottom: 2px solid rgba(122, 0, 0, 1);
+  background-color: rgba(81, 0, 0, 1);
+  box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+
+
+.node-modele-args, .node-fonction-args, .node-parameter-args, .node-dataset-args
+{
+  border-top: 0px;
+  gap: 3em;
+
+} 
+
+
+.node-modele-args-container, .node-fonction-args-container, .node-parameter-args-container, .node-dataset-args-container
+{
+  padding: 15px 5px 15px 5px;
+  font-size: 0.9em;
+  gap: 1em;
+}
+
+.node-modele-input, .node-modele-output, .node-fonction-input, .node-fonction-output, .node-parameter-input, .node-parameter-output, .node-dataset-input, .node-dataset-output
+{
+  position: relative;
+  gap: 1em;
+}
+
+.node-modele-output, .node-fonction-output, .node-parameter-output, .node-dataset-output
+{
+  flex-direction: row-reverse;
+}
+
+.node-modele-handle, .node-fonction-handle, .node-parameter-handle, .node-dataset-handle
+{
+  position: relative;
+  right: inherit;
+  top: inherit;
+  left: inherit;
+  transform: inherit;
+  padding: 0;
+  width: 10px;
+  height: 10px;
+}
+
+
+/*----------------------- Fonction Node -----------------------*/
+
+.node-fonction
+{
+  border: 2px solid rgba(0, 122, 11, 1);
+  box-shadow: 0 3px 5px rgba(0, 255, 0, 0.2);
+  backdrop-filter: blur(10px);
+
+}
+.node-fonction-header
+{
+  background-color: rgba(0, 81, 11, 1);
+  border-bottom: 2px solid rgba(0, 122, 11, 1);
+  box-shadow: 0 2px 4px rgba(0, 255, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.node-fonction-args 
+{
+  border-top: 0px;
+}
+
+
+
+
+
+/*----------------------- Parameter Node -----------------------*/
+
+.node-parameter
+{
+  border: 2px solid rgba(0, 2, 160, 1);
+  box-shadow: 0 3px 5px rgba(0, 0, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.node-parameter-header 
+{
+  border-bottom: 2px solid rgba(0, 2, 160, 1);
+  background-color: rgba(0, 2, 111, 1);
+  box-shadow: 0 3px 5px rgba(0, 0, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.node-parameter-args
+{
+  border: 0;
+  border-top: 0px;
+}
+
+.node-parameter-button 
+{
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.node-parameter-button button 
+{
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(0, 2, 133, 1);
+  color: white;
+  cursor: pointer;
+}
+
+.node-parameter-button button:hover 
+{
+  background-color: rgb(2, 5, 195);
+}
+
+/* .node-parameter-slider 
+{
+  margin-top: 10px;
+} */
+
+.slider 
+{
+  -webkit-appearance :none;
+  -moz-appearance :none;
+  appearance :none;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  margin: 10px 0;
+  height: 20px;
+  border-radius: 5px; 
+}
+
+.slider:focus-visible,
+.slider:hover{
+  --p: 25%;
+}
+
+.slider::-webkit-slider-thumb
+{
+  height: 20px;
+  width: 5px;
+  border-radius: 10px;
+  background: rgb(2, 5, 195);
+  border-image: linear-gradient(90deg,rgba(2, 5, 195, 1)50%, white 0) 0 1/calc(50% - 4px/2) 100vw/0 100vw;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: .3s;
+}
+
+.slider-control
+{
+  gap: 1em;
+  transition: transform 0.3s ease;
+
+}
+
+.slider-button
+{
+  height: 25px;
+  width: 25px;
+  border-radius: 5px;
+  border: 2px solid rgba(0, 2, 160, 1);
+  box-shadow: 0 3px 5px rgba(0, 2, 160, 0.2);
+  backdrop-filter: blur(10px);
+  background: rgba(0, 2, 160, 1);
+  color: white;
+  cursor: pointer;
+}
+
+.slider-button:hover
+{
+  transform: scale(0.95);
+}
+
+.slider-value 
+{
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+
+.node-textbox-input-container 
+{
+  margin-bottom: 10px;
+}
+
+.textbox 
+{
+  width: 60%;
+  height: 15px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.step-value {font-size: 0.9em;}
+
+.node-neuronnes
+{
+  gap: 2em;
+}
+
+.node-parameter-order
+{
+  font-size: 12px;
+  border: 2px solid rgba(0, 2, 160, 1);
+  box-shadow: 0 3px 5px rgba(0, 2, 160, 0.2);
+  backdrop-filter: blur(10px);
+  background: rgba(0, 2, 160, 1);
+  color: white;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.node-parameter-order:hover
+{
+  transform: scale(0.95);
+}
+/*----------------------- Dataset Node -----------------------*/
+
+.node-dataset
+{
+  border: 2px solid rgb(144, 0, 228);
+  box-shadow: 0 3px 5px rgba(162, 0, 255, 0.2);
+  backdrop-filter: blur(10px);
+
+}
+.node-dataset-header
+{
+  border-bottom: 2px solid rgb(144, 0, 228);
+  background-color: rgb(66, 0, 105);
+  box-shadow: 0 2px 4px rgba(162, 0, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.node-dataset-args 
+{
+  border-top: 0px;
+}
